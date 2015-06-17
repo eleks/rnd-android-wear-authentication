@@ -1,40 +1,63 @@
 package com.eleks.securedatastorage.activity;
 
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.v7.app.ActionBarActivity;
+import android.text.TextUtils;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.eleks.securedatastorage.R;
+import com.eleks.securedatastorage.sdk.storage.SecuredStorage;
+import com.eleks.securedatastorage.utils.Constants;
 
 
 public class MainActivity extends ActionBarActivity {
+
+    private EditText mUserNameEditText;
+    private EditText mPasswordEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        initControls();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+    private void initControls() {
+        final SecuredStorage securedStorage = new SecuredStorage(MainActivity.this);
+        mUserNameEditText = (EditText) findViewById(R.id.user_name);
+        String userName = securedStorage.getString(Constants.Extras.USER_NAME_ENTITY, null);
+        if (!TextUtils.isEmpty(userName)) {
+            mUserNameEditText.setText(userName);
+        }
+        mPasswordEditText = (EditText) findViewById(R.id.password);
+        String password = securedStorage.getString(Constants.Extras.PASSWORD_ENTITY, null);
+        if (!TextUtils.isEmpty(password)) {
+            mPasswordEditText.setText(password);
+        }
+        Button loginButton = (Button) findViewById(R.id.login_button);
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String userName = mUserNameEditText.getText().toString();
+                String password = mPasswordEditText.getText().toString();
+                if (isUserNameValid(userName) && isPasswordValid(password)) {
+                    securedStorage.setString(Constants.Extras.USER_NAME_ENTITY, userName);
+                    securedStorage.setString(Constants.Extras.PASSWORD_ENTITY, password);
+                }
+            }
+        });
+    }
+
+    private boolean isPasswordValid(String password) {
+        //TODO Need to implement
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+    private boolean isUserNameValid(String userName) {
+        //TODO Need to implement
+        return true;
     }
+
 }
