@@ -1,7 +1,7 @@
 package com.eleks.securedatastorage.sdk.security;
 
 
-import com.eleks.securedatastorage.utils.Constants;
+import com.eleks.securedatastorage.sdk.utils.Constants;
 
 /**
  * Created by Sergey on 25.05.2015.

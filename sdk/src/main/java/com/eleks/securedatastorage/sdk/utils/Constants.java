@@ -1,4 +1,4 @@
-package com.eleks.securedatastorage.utils;
+package com.eleks.securedatastorage.sdk.utils;
 
 /**
  * Created by Sergey on 09.04.2015.
@@ -11,8 +11,4 @@ public class Constants {
     public static final byte[] DEFAULT_ENCRYPTION_IV = new byte[16];
     public static final String DEFAULT_CHARSET_NAME = "UTF-8";
 
-    public static class Extras {
-        public static final String PASSWORD_ENTITY = "password";
-        public static final String USER_NAME_ENTITY = "user_name";
-    }
 }

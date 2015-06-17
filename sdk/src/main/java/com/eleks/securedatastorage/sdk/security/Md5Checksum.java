@@ -3,7 +3,7 @@ package com.eleks.securedatastorage.sdk.security;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.eleks.securedatastorage.utils.Constants;
+import com.eleks.securedatastorage.sdk.utils.Constants;
 
 import java.io.IOException;
 import java.math.BigInteger;
