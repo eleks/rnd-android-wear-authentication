@@ -2,12 +2,12 @@
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License.
- *
+ * <p/>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p/>
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -22,7 +22,6 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 
@@ -32,7 +31,6 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -77,9 +75,7 @@ public class Encryption {
      * Encrypt a String
      *
      * @param data the String to be encrypted
-     *
      * @return the encrypted String or {@code null} if you send the data as {@code null}
-     *
      * @throws UnsupportedEncodingException       if the Builder charset name is not supported or if
      *                                            the Builder charset name is not supported
      * @throws NoSuchAlgorithmException           if the Builder digest algorithm is not available
@@ -106,11 +102,17 @@ public class Encryption {
      *                                            encryption or decryption
      */
     private String encrypt(String data) throws UnsupportedEncodingException,
-            NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
-            InvalidKeyException, InvalidKeySpecException, BadPaddingException,
-            IllegalBlockSizeException {
+            NoSuchAlgorithmException, InvalidKeySpecException, IllegalBlockSizeException,
+            InvalidKeyException, BadPaddingException, InvalidAlgorithmParameterException,
+            NoSuchPaddingException {
         if (data == null) return null;
         SecretKey secretKey = getSecretKey(hashTheKey(mBuilder.getKey()));
+        return encrypt(secretKey, data);
+    }
+
+    private String encrypt(SecretKey secretKey, String data) throws UnsupportedEncodingException,
+            NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException,
+            InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
         byte[] dataBytes = data.getBytes(mBuilder.getCharsetName());
         Cipher cipher = Cipher.getInstance(mBuilder.getAlgorithm());
         cipher.init(Cipher.ENCRYPT_MODE, secretKey, mBuilder.getIvParameterSpec(),
@@ -123,12 +125,20 @@ public class Encryption {
      * {@code null} when it occurs and logging the error
      *
      * @param data the String to be encrypted
-     *
      * @return the encrypted String or {@code null} if you send the data as {@code null}
      */
     public String encryptOrNull(String data) {
         try {
             return encrypt(data);
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage(), e);
+            return null;
+        }
+    }
+
+    public String encryptOrNull(SecretKey secretKey, String data) {
+        try {
+            return encrypt(secretKey, data);
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
             return null;
@@ -175,9 +185,7 @@ public class Encryption {
      * Decrypt a String
      *
      * @param data the String to be decrypted
-     *
      * @return the decrypted String or {@code null} if you send the data as {@code null}
-     *
      * @throws UnsupportedEncodingException       if the Builder charset name is not supported or if
      *                                            the Builder charset name is not supported
      * @throws NoSuchAlgorithmException           if the Builder digest algorithm is not available
@@ -208,8 +216,14 @@ public class Encryption {
             InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException,
             IllegalBlockSizeException {
         if (data == null) return null;
-        byte[] dataBytes = Base64.decode(data, mBuilder.getBase64Mode());
         SecretKey secretKey = getSecretKey(hashTheKey(mBuilder.getKey()));
+        return decrypt(secretKey, data);
+    }
+
+    private String decrypt(SecretKey secretKey, String data) throws NoSuchPaddingException,
+            NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException,
+            BadPaddingException, IllegalBlockSizeException {
+        byte[] dataBytes = Base64.decode(data, mBuilder.getBase64Mode());
         Cipher cipher = Cipher.getInstance(mBuilder.getAlgorithm());
         cipher.init(Cipher.DECRYPT_MODE, secretKey, mBuilder.getIvParameterSpec(),
                 mBuilder.getSecureRandom());
@@ -222,12 +236,20 @@ public class Encryption {
      * {@code null} when it occurs and logging the error
      *
      * @param data the String to be decrypted
-     *
      * @return the decrypted String or {@code null} if you send the data as {@code null}
      */
     public String decryptOrNull(String data) {
         try {
             return decrypt(data);
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage(), e);
+            return null;
+        }
+    }
+
+    public String decryptOrNull(SecretKey secretKey, String data) {
+        try {
+            return decrypt(secretKey, data);
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
             return null;
@@ -274,9 +296,7 @@ public class Encryption {
      * creates a 128bit salted aes key
      *
      * @param key encoded input key
-     *
      * @return aes 128 bit salted key
-     *
      * @throws NoSuchAlgorithmException     if no installed provider that can provide the requested
      *                                      by the Builder secret key type
      * @throws UnsupportedEncodingException if the Builder charset name is not supported
@@ -299,9 +319,7 @@ public class Encryption {
      * and return the char array
      *
      * @param key simple inputted string
-     *
      * @return sha1 base64 encoded representation
-     *
      * @throws UnsupportedEncodingException if the Builder charset name is not supported
      * @throws NoSuchAlgorithmException     if the Builder digest algorithm is not available
      * @throws NullPointerException         if the Builder digest algorithm is {@code null}
