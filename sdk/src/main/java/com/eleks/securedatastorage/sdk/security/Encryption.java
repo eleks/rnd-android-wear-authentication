@@ -71,6 +71,15 @@ public class Encryption {
         }
     }
 
+    public static Encryption getDefault(String salt, byte[] iv) {
+        try {
+            return Builder.getDefaultBuilder(null, salt, iv).build();
+        } catch (NoSuchAlgorithmException e) {
+            Log.e(TAG, e.getMessage(), e);
+            return null;
+        }
+    }
+
     /**
      * Encrypt a String
      *

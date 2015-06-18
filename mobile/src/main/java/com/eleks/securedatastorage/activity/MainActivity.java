@@ -8,7 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.eleks.securedatastorage.R;
-import com.eleks.securedatastorage.sdk.storage.SecuredStorage;
+import com.eleks.securedatastorage.sdk.storage.SecureStorageManager;
 import com.eleks.securedatastorage.utils.Constants;
 
 
@@ -25,14 +25,15 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void initControls() {
-        final SecuredStorage securedStorage = new SecuredStorage(MainActivity.this);
+        final SecureStorageManager secureStorageManager =
+                new SecureStorageManager(MainActivity.this, null);
         mUserNameEditText = (EditText) findViewById(R.id.user_name);
-        String userName = securedStorage.getString(Constants.Extras.USER_NAME_ENTITY, null);
+        String userName = secureStorageManager.getString(Constants.Extras.USER_NAME_ENTITY, null);
         if (!TextUtils.isEmpty(userName)) {
             mUserNameEditText.setText(userName);
         }
         mPasswordEditText = (EditText) findViewById(R.id.password);
-        String password = securedStorage.getString(Constants.Extras.PASSWORD_ENTITY, null);
+        String password = secureStorageManager.getString(Constants.Extras.PASSWORD_ENTITY, null);
         if (!TextUtils.isEmpty(password)) {
             mPasswordEditText.setText(password);
         }
@@ -43,8 +44,9 @@ public class MainActivity extends ActionBarActivity {
                 String userName = mUserNameEditText.getText().toString();
                 String password = mPasswordEditText.getText().toString();
                 if (isUserNameValid(userName) && isPasswordValid(password)) {
-                    securedStorage.setString(Constants.Extras.USER_NAME_ENTITY, userName);
-                    securedStorage.setString(Constants.Extras.PASSWORD_ENTITY, password);
+                    secureStorageManager.setString(Constants.Extras.USER_NAME_ENTITY, userName);
+                    secureStorageManager.setString(Constants.Extras.PASSWORD_ENTITY, password);
+                    secureStorageManager.apply();
                 }
             }
         });
