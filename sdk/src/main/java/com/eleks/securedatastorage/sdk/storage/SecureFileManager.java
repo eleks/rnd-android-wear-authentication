@@ -3,10 +3,13 @@ package com.eleks.securedatastorage.sdk.storage;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.eleks.securedatastorage.sdk.interfaces.OnGetHalfOfKeyListener;
+import com.eleks.securedatastorage.sdk.interfaces.WearableSecureDataInterface;
 import com.eleks.securedatastorage.sdk.model.DataFile;
 import com.eleks.securedatastorage.sdk.model.DataHolder;
 import com.eleks.securedatastorage.sdk.model.EntityHolder;
 import com.eleks.securedatastorage.sdk.model.SecureAttributes;
+import com.eleks.securedatastorage.sdk.security.Encryption;
 import com.eleks.securedatastorage.sdk.utils.Constants;
 import com.eleks.securedatastorage.sdk.utils.IOHelper;
 import com.google.gson.Gson;
@@ -22,12 +25,12 @@ import java.util.ArrayList;
 public class SecureFileManager {
 
     private final Context mContext;
-    private final WearDeviceSecureDataInterface mWearInterface;
+    private final WearableSecureDataInterface mWearableInterface;
     private final SecureAttributes mSecureAttributes;
 
-    public SecureFileManager(Context context, WearDeviceSecureDataInterface wearInterface) {
+    public SecureFileManager(Context context, WearableSecureDataInterface wearableInterface) {
         this.mContext = context;
-        this.mWearInterface = wearInterface;
+        this.mWearableInterface = wearableInterface;
         this.mSecureAttributes = getSecureAttributes();
     }
 
@@ -48,8 +51,25 @@ public class SecureFileManager {
         return result;
     }
 
-    public void storeData(ArrayList<EntityHolder> entities) {
+    public void storeData(final ArrayList<EntityHolder> entities) {
+        if (mSecureAttributes.getSecretKey() == null) {
+            new WearableManager(mContext, mWearableInterface, new OnGetHalfOfKeyListener() {
+                @Override
+                public void OnGetHalfOfKey(byte[] deviceHalfOfKey) {
+                    if (deviceHalfOfKey != null) {
+                        mSecureAttributes.setDeviceHalfOfKey(deviceHalfOfKey);
+                        storeData(entities);
+                    } else {
+                        //TODO process it
+                    }
+                }
+            }
 
+            );
+        }
+        {
+            //TODO process it
+        }
     }
 
     public String getData(String entityName) {
@@ -77,7 +97,15 @@ public class SecureFileManager {
     }
 
     private String decryptData(String data) {
-
+        String result = null;
+        if (mSecureAttributes != null && mSecureAttributes.getSecretKey() != null) {
+            Encryption encryption = Encryption.getDefault(
+                    mSecureAttributes.getSalt(), mSecureAttributes.getInitialVector());
+            result = encryption.decryptOrNull(mSecureAttributes.getSecretKey(), data);
+        } else {
+            //TODO need to process
+        }
+        return result;
     }
 
     private DataHolder getDataHolder(String decryptedData) {
