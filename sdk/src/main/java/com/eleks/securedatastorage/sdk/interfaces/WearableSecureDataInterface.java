@@ -5,6 +5,7 @@ package com.eleks.securedatastorage.sdk.interfaces;
  */
 public interface WearableSecureDataInterface {
 
-    byte[] getDeviceHalfOfKey();
+    byte[] getDeviceHalfOfKey(OnGetHalfOfKeyListener getHalfOfKeyListener);
+
     boolean isPairedDeviceConnected();
 }
