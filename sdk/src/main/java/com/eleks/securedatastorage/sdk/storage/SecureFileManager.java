@@ -12,6 +12,7 @@ import com.eleks.securedatastorage.sdk.model.SecureAttributes;
 import com.eleks.securedatastorage.sdk.security.Encryption;
 import com.eleks.securedatastorage.sdk.utils.Constants;
 import com.eleks.securedatastorage.sdk.utils.IOHelper;
+import com.eleks.securedatastorage.sdk.wearable.WearableManager;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
