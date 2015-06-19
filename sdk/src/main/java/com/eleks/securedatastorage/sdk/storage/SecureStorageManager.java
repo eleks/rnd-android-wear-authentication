@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 
 import com.eleks.securedatastorage.sdk.dialogs.AskUserDialog;
+import com.eleks.securedatastorage.sdk.interfaces.WearableSecureDataInterface;
 import com.eleks.securedatastorage.sdk.model.EntityHolder;
 import com.eleks.securedatastorage.sdk.utils.Constants;
 import com.eleks.securedatastorage.securestoragesdk.R;
@@ -17,10 +18,10 @@ public class SecureStorageManager {
 
     private final Context mContext;
     private final SecureStoragePreferences mPreferences;
-    private final WearDeviceSecureDataInterface mWearInterface;
+    private final WearableSecureDataInterface mWearInterface;
     private ArrayList<EntityHolder> mEntities;
 
-    public SecureStorageManager(Context context, WearDeviceSecureDataInterface wearInterface) {
+    public SecureStorageManager(Context context, WearableSecureDataInterface wearInterface) {
         this.mContext = context;
         this.mWearInterface = wearInterface;
         mPreferences = new SecureStoragePreferences(context);
