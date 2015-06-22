@@ -78,7 +78,7 @@ public class MainActivity extends ActionBarActivity {
         @Override
         protected Void doInBackground(Void... voids) {
             GWatchMethods gWatchMethods = new GWatchMethods(MainActivity.this);
-            gWatchMethods.sendMessage("cbd903a", GWatchMessages.Requests.SHOULD_USE_THIS_DEVICE_FOR_SECURE_STORAGE, null);
+            gWatchMethods.sendMessage("49db30f6", GWatchMessages.Requests.SHOULD_USE_THIS_DEVICE_FOR_SECURE_STORAGE, null);
             return null;
         }
     }

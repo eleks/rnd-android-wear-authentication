@@ -9,7 +9,7 @@ public class GWatchMethods_Test extends InstrumentationTestCase {
 
     public void test_checkIfWearableConnected() {
         GWatchMethods gWatchMethods = new GWatchMethods(getInstrumentation().getTargetContext());
-        boolean result = gWatchMethods.checkIfWearableConnected("cbd903a");
+        boolean result = gWatchMethods.checkIfWearableConnected("49db30f6");
         assertTrue(result);
     }
 }
