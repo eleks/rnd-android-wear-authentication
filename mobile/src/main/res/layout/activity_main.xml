@@ -33,4 +33,12 @@
         android:layout_marginTop="30dp"
         android:text="@string/login_button_text" />
 
+    <Button
+        android:id="@+id/test_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/login_button"
+        android:layout_marginTop="30dp"
+        android:text="@string/test_button_text" />
+
 </RelativeLayout>
