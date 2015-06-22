@@ -16,6 +16,6 @@ public class PasswordDialog {
     }
 
     public void show(OnGetHalfOfKeyListener getHalfOfKeyListener) {
-        
+
     }
 }
