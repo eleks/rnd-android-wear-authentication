@@ -29,4 +29,8 @@ public class Constants {
         public static final int SALT_LENGTH = 50;
         public static final String ATTRIBUTES_FILE_NAME = "Attributes.dat";
     }
+
+    public static class G_WATCH {
+        public static final long CONNECTION_TIME_OUT_MS = 1000;
+    }
 }
