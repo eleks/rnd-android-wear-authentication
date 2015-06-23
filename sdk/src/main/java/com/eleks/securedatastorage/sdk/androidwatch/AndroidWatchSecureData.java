@@ -3,9 +3,9 @@ package com.eleks.securedatastorage.sdk.androidwatch;
 import android.content.Context;
 import android.os.Handler;
 
+import com.eleks.securedatastorage.sdk.interfaces.OnGetDeviceHalfOfKey;
 import com.eleks.securedatastorage.sdk.interfaces.OnGetDeviceList;
 import com.eleks.securedatastorage.sdk.interfaces.OnGetError;
-import com.eleks.securedatastorage.sdk.interfaces.OnGetDeviceHalfOfKey;
 import com.eleks.securedatastorage.sdk.interfaces.OnGetPairedDevice;
 import com.eleks.securedatastorage.sdk.interfaces.OnGetPairedDeviceId;
 import com.eleks.securedatastorage.sdk.interfaces.WearableDeviceError;
@@ -15,14 +15,12 @@ import com.eleks.securedatastorage.securestoragesdk.R;
 import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.MessageEvent;
 
-import java.io.Closeable;
-import java.io.IOException;
 import java.util.List;
 
 /**
  * Created by Serhiy.Krasovskyy on 22.06.2015.
  */
-public class AndroidWatchSecureData implements WearableSecureDataInterface, Closeable {
+public class AndroidWatchSecureData implements WearableSecureDataInterface {
 
 
     private final Context mContext;
@@ -33,6 +31,7 @@ public class AndroidWatchSecureData implements WearableSecureDataInterface, Clos
 
     public AndroidWatchSecureData(Context context) {
         mContext = context;
+        mAndroidWatchMethods = AndroidWatchMethods.getInstance(context);
     }
 
     @Override
@@ -42,7 +41,6 @@ public class AndroidWatchSecureData implements WearableSecureDataInterface, Clos
         startWatchdogTimer(getHalfOfKeyListener,
                 WearableDeviceError.CAN_NOT_GET_HALF_OF_KEY_FROM_DEVICE,
                 mContext.getString(R.string.can_not_get_device_half_of_key));
-        mAndroidWatchMethods = new AndroidWatchMethods(mContext);
         mAndroidWatchMethods.setMessageListener(new MessageApi.MessageListener() {
             @Override
             public void onMessageReceived(MessageEvent messageEvent) {
@@ -61,7 +59,6 @@ public class AndroidWatchSecureData implements WearableSecureDataInterface, Clos
 
     @Override
     public void setDeviceHalfOfKey(String deviceId, byte[] deviceHalfOfKey) {
-        mAndroidWatchMethods = new AndroidWatchMethods(mContext);
         mAndroidWatchMethods.sendMessage(deviceId,
                 AndroidWatchMessages.Requests.SET_DEVICE_HALF_OF_KEY, deviceHalfOfKey);
     }
@@ -69,7 +66,6 @@ public class AndroidWatchSecureData implements WearableSecureDataInterface, Clos
     @Override
     public void isPairedDeviceConnected(final String deviceId,
                                         final OnGetPairedDevice getPairedDeviceListener) {
-        mAndroidWatchMethods = new AndroidWatchMethods(mContext);
         mAndroidWatchMethods.getWearableDevicesList(new OnGetDeviceList() {
             @Override
             public void foundDevices(List<String> devices) {
@@ -93,7 +89,6 @@ public class AndroidWatchSecureData implements WearableSecureDataInterface, Clos
         mWatchDogFlag = true;
         startWatchdogTimer(getPairedDeviceId, WearableDeviceError.CAN_NOT_GET_PAIRED_DEVICE,
                 mContext.getString(R.string.can_not_get_paired_device));
-        mAndroidWatchMethods = new AndroidWatchMethods(mContext);
         mAndroidWatchMethods.setMessageListener(new MessageApi.MessageListener() {
             @Override
             public void onMessageReceived(MessageEvent messageEvent) {
@@ -152,10 +147,10 @@ public class AndroidWatchSecureData implements WearableSecureDataInterface, Clos
                 Constants.AndroidWatch.DEVICE_OPERATION_DELAY);
     }
 
-    @Override
-    public void close() throws IOException {
-        if (mAndroidWatchMethods != null) {
-            mAndroidWatchMethods.disconnectWearableClient();
-        }
-    }
+//    @Override
+//    public void close() throws IOException {
+//        if (mAndroidWatchMethods != null) {
+//            mAndroidWatchMethods.disconnectWearableClient();
+//        }
+//    }
 }

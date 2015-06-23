@@ -26,7 +26,7 @@ public class AndroidWatchMessageService extends WearableListenerService {
                         byte[] data = new AndroidWatchSecurityManager(
                                 AndroidWatchMessageService.this)
                                 .getDeviceHalfOfKey();
-                        new AndroidWatchMethods(AndroidWatchMessageService.this)
+                        AndroidWatchMethods.getInstance(AndroidWatchMessageService.this)
                                 .sendMessage(messageEvent.getSourceNodeId(),
                                         AndroidWatchMessages.Responses.GET_DEVICE_HALF_OF_KEY,
                                         data);

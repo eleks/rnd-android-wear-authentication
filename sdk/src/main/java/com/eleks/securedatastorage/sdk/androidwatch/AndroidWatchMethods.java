@@ -2,7 +2,6 @@ package com.eleks.securedatastorage.sdk.androidwatch;
 
 import android.app.Activity;
 import android.content.Context;
-import android.text.TextUtils;
 
 import com.eleks.securedatastorage.sdk.interfaces.OnGetDeviceList;
 import com.eleks.securedatastorage.sdk.utils.Constants;
@@ -16,24 +15,29 @@ import com.google.android.gms.wearable.Wearable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by Serhiy.Krasovskyy on 22.06.2015.
  */
 public class AndroidWatchMethods implements MessageApi.MessageListener {
 
-    private static GoogleApiClient sWearableApiClient;
+    private static AndroidWatchMethods sAndroidWatchMethods;
+    private GoogleApiClient sWearableApiClient;
     private Context mContext;
     private MessageApi.MessageListener mMessageListener;
 
-    public AndroidWatchMethods(Context context) {
+    private AndroidWatchMethods(Context context) {
         mContext = context;
         getGoogleApiClient(mContext);
         Wearable.MessageApi.addListener(sWearableApiClient, this);
     }
 
+    public static synchronized AndroidWatchMethods getInstance(Context context) {
+        if (sAndroidWatchMethods == null) {
+            sAndroidWatchMethods = new AndroidWatchMethods(context);
+        }
+        return sAndroidWatchMethods;
+    }
 
     private GoogleApiClient getGoogleApiClient(Context context) {
         if (sWearableApiClient == null)
@@ -43,11 +47,11 @@ public class AndroidWatchMethods implements MessageApi.MessageListener {
         return sWearableApiClient;
     }
 
-    public void disconnectWearableClient() {
-        if (sWearableApiClient.isConnected()) {
-            sWearableApiClient.disconnect();
-        }
-    }
+//    public void disconnectWearableClient() {
+//        if (sWearableApiClient.isConnected()) {
+//            sWearableApiClient.disconnect();
+//        }
+//    }
 
     public void sendMessage(final String deviceId, final String message, final byte[] data) {
         new Thread(new Runnable() {

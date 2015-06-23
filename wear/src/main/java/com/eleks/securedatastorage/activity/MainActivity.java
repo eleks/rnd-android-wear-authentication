@@ -90,7 +90,7 @@ public class MainActivity extends Activity {
         } else {
             data[0] = 0;
         }
-        new AndroidWatchMethods(MainActivity.this).sendMessage(mPhoneId,
+        AndroidWatchMethods.getInstance(MainActivity.this).sendMessage(mPhoneId,
                 AndroidWatchMessages.Responses.SHOULD_USE_THIS_DEVICE_FOR_SECURE_STORAGE, data);
     }
 

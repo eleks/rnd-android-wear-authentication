@@ -16,8 +16,6 @@ import com.eleks.securedatastorage.sdk.interfaces.WearableDeviceError;
 import com.eleks.securedatastorage.sdk.storage.SecureStorageManager;
 import com.eleks.securedatastorage.utils.Constants;
 
-import java.io.IOException;
-
 
 public class MainActivity extends ActionBarActivity {
 
@@ -68,7 +66,7 @@ public class MainActivity extends ActionBarActivity {
                     @Override
                     public void getError(WearableDeviceError error, String errorMessage) {
                         Toast.makeText(MainActivity.this, errorMessage, Toast.LENGTH_LONG).show();
-                        closeAndroidWatchSecureData(androidWatchSecureData);
+                        //closeAndroidWatchSecureData(androidWatchSecureData);
                     }
 
                     @Override
@@ -78,20 +76,20 @@ public class MainActivity extends ActionBarActivity {
                             message = "Device Id = " + deviceId;
                         }
                         Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
-                        closeAndroidWatchSecureData(androidWatchSecureData);
+                        //closeAndroidWatchSecureData(androidWatchSecureData);
                     }
                 });
             }
         });
     }
 
-    private void closeAndroidWatchSecureData(AndroidWatchSecureData androidWatchSecureData) {
-        try {
-            androidWatchSecureData.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+//    private void closeAndroidWatchSecureData(AndroidWatchSecureData androidWatchSecureData) {
+//        try {
+//            androidWatchSecureData.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     private boolean isPasswordValid(String password) {
         //TODO Need to implement
