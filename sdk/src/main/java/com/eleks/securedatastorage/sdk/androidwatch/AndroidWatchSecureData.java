@@ -5,7 +5,7 @@ import android.os.Handler;
 
 import com.eleks.securedatastorage.sdk.interfaces.OnGetDeviceList;
 import com.eleks.securedatastorage.sdk.interfaces.OnGetError;
-import com.eleks.securedatastorage.sdk.interfaces.OnGetHalfOfKeyListener;
+import com.eleks.securedatastorage.sdk.interfaces.OnGetDeviceHalfOfKey;
 import com.eleks.securedatastorage.sdk.interfaces.OnGetPairedDevice;
 import com.eleks.securedatastorage.sdk.interfaces.OnGetPairedDeviceId;
 import com.eleks.securedatastorage.sdk.interfaces.WearableDeviceError;
@@ -37,7 +37,7 @@ public class AndroidWatchSecureData implements WearableSecureDataInterface, Clos
 
     @Override
     public void getDeviceHalfOfKey(final String deviceId,
-                                   final OnGetHalfOfKeyListener getHalfOfKeyListener) {
+                                   final OnGetDeviceHalfOfKey getHalfOfKeyListener) {
         mWatchDogFlag = true;
         startWatchdogTimer(getHalfOfKeyListener,
                 WearableDeviceError.CAN_NOT_GET_HALF_OF_KEY_FROM_DEVICE,

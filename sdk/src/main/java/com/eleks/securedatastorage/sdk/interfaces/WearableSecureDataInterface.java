@@ -5,7 +5,7 @@ package com.eleks.securedatastorage.sdk.interfaces;
  */
 public interface WearableSecureDataInterface {
 
-    void getDeviceHalfOfKey(String deviceId, OnGetHalfOfKeyListener getHalfOfKeyListener);
+    void getDeviceHalfOfKey(String deviceId, OnGetDeviceHalfOfKey getHalfOfKeyListener);
 
     void setDeviceHalfOfKey(String deviceId, byte[] deviceHalfOfKey);
 
