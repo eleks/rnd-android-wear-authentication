@@ -10,7 +10,7 @@ import java.io.IOException;
 /**
  * Created by Sergey on 22.06.2015.
  */
-public class IOHelper {
+public class IOHelper1 {
 
     public static void writeFileSources(File file, byte[] data) {
         BufferedOutputStream outputStream = null;
