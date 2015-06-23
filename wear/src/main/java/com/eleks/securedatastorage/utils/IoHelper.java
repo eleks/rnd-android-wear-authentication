@@ -10,7 +10,7 @@ import java.io.IOException;
 /**
  * Created by Sergey on 22.06.2015.
  */
-public class IoHelper {
+public class IOHelper {
 
     public static void writeFileSources(File file, byte[] data) {
         BufferedOutputStream outputStream = null;
@@ -38,6 +38,7 @@ public class IoHelper {
             BufferedInputStream inputStream = null;
             try {
                 inputStream = new BufferedInputStream(new FileInputStream(file));
+                //noinspection ResultOfMethodCallIgnored
                 inputStream.read(result);
             } catch (IOException e) {
                 result = null;

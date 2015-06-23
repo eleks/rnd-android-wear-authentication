@@ -5,25 +5,23 @@ import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import com.eleks.securedatastorage.utils.Constants;
-import com.eleks.securedatastorage.utils.IoHelper;
+import com.eleks.securedatastorage.utils.IOHelper;
 
 import java.io.File;
 
 /**
  * Created by Sergey on 22.06.2015.
  */
-public class SecurityManager {
+public class AndroidWatchSecurityManager {
 
-    private static final String TAG = SecurityManager.class.getName();
+    private static final String TAG = AndroidWatchSecurityManager.class.getName();
     private static String sPhoneId;
     private final SharedPreferences mSharedPreferences;
     private final File mKeyFile;
-    private Context mContext;
 
-    public SecurityManager(Context context) {
-        mContext = context;
+    public AndroidWatchSecurityManager(Context context) {
         mSharedPreferences = context.getSharedPreferences(TAG, Context.MODE_PRIVATE);
-        mKeyFile = new File(mContext.getFilesDir(), Constants.Security.KEY_FILE_NAME);
+        mKeyFile = new File(context.getFilesDir(), Constants.Security.KEY_FILE_NAME);
     }
 
     public String getPhoneId() {
@@ -40,11 +38,18 @@ public class SecurityManager {
         editor.apply();
     }
 
-    public void setDeviceHalfOfKey(byte[] data) {
-        IoHelper.writeFileSources(mKeyFile, data);
+    public byte[] getDeviceHalfOfKey() {
+        return IOHelper.loadFileSources(mKeyFile);
     }
 
-    public byte[] getDeviceHalfOfKey(){
-        return  IoHelper.loadFileSources(mKeyFile);
+    public void setDeviceHalfOfKey(byte[] data) {
+        if (data == null) {
+            if (mKeyFile.exists()) {
+                //noinspection ResultOfMethodCallIgnored
+                mKeyFile.delete();
+            }
+        } else {
+            IOHelper.writeFileSources(mKeyFile, data);
+        }
     }
 }

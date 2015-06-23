@@ -3,22 +3,21 @@ package com.eleks.securedatastorage.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.wearable.view.WatchViewStub;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.eleks.securedatastorage.R;
+import com.eleks.securedatastorage.manager.AndroidWatchSecurityManager;
+import com.eleks.securedatastorage.sdk.androidwatch.AndroidWatchMessages;
+import com.eleks.securedatastorage.sdk.androidwatch.AndroidWatchMethods;
 import com.eleks.securedatastorage.utils.Constants;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.wearable.Wearable;
 
 public class MainActivity extends Activity {
 
-    private GoogleApiClient mClient;
     private String mPhoneId;
-
 
     public static void start(Context context, String phoneId) {
         Intent startIntent = new Intent(context, MainActivity.class);
@@ -32,7 +31,6 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getExtras();
-        initApi();
         final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
             @Override
@@ -41,7 +39,7 @@ public class MainActivity extends Activity {
                 okButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        pairDevices();
+                        new PairDeviceTask().execute(true);
                         finish();
                     }
                 });
@@ -49,6 +47,7 @@ public class MainActivity extends Activity {
                 cancelButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        new PairDeviceTask().execute(false);
                         finish();
                     }
                 });
@@ -56,21 +55,23 @@ public class MainActivity extends Activity {
         });
     }
 
-    private void pairDevices() {
-        Toast.makeText(this, "Phone Id = " + mPhoneId, Toast.LENGTH_LONG).show();
-    }
-
-    private void initApi() {
-        mClient = getGoogleApiClient(this);
-    }
-
-    private GoogleApiClient getGoogleApiClient(Context context) {
-        return new GoogleApiClient.Builder(context)
-                .addApi(Wearable.API)
-                .build();
-    }
-
     public void getExtras() {
         mPhoneId = getIntent().getExtras().getString(Constants.Extras.PHONE_ID, null);
+    }
+
+    private class PairDeviceTask extends AsyncTask<Boolean, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Boolean... booleans) {
+            boolean result = booleans[0];
+            if (result) {
+                new AndroidWatchSecurityManager(MainActivity.this).setPhoneId(mPhoneId);
+            }
+            String stringResult = String.valueOf(result);
+            byte[] data = stringResult.getBytes();
+            new AndroidWatchMethods(MainActivity.this).sendMessage(mPhoneId,
+                    AndroidWatchMessages.Responses.SHOULD_USE_THIS_DEVICE_FOR_SECURE_STORAGE, data);
+            return null;
+        }
     }
 }
