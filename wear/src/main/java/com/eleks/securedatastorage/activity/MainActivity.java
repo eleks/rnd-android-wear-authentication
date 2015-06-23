@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.wearable.view.WatchViewStub;
 import android.view.View;
 import android.widget.Button;
@@ -17,6 +18,8 @@ import com.eleks.securedatastorage.utils.Constants;
 public class MainActivity extends Activity {
 
     private String mPhoneId;
+    private Handler mWatchdogHandler;
+    private Runnable mWatchDogRunnable;
 
     public static void start(Context context, String phoneId) {
         Intent startIntent = new Intent(context, MainActivity.class);
@@ -34,6 +37,7 @@ public class MainActivity extends Activity {
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
             @Override
             public void onLayoutInflated(WatchViewStub stub) {
+                startWatchdogTimer();
                 Button okButton = (Button) stub.findViewById(R.id.ok_button);
                 okButton.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -54,8 +58,26 @@ public class MainActivity extends Activity {
         });
     }
 
+    private void startWatchdogTimer() {
+        mWatchdogHandler = new Handler();
+        mWatchDogRunnable = new Runnable() {
+            @Override
+            public void run() {
+                MainActivity.this.finish();
+            }
+        };
+        mWatchdogHandler.postDelayed(mWatchDogRunnable, Constants.DEVICE_OPERATION_DELAY);
+    }
+
     public void getExtras() {
+        stopWatchDogTimer();
         mPhoneId = getIntent().getExtras().getString(Constants.Extras.PHONE_ID, null);
+    }
+
+    private void stopWatchDogTimer() {
+        if (mWatchdogHandler != null && mWatchDogRunnable != null) {
+            mWatchdogHandler.removeCallbacks(mWatchDogRunnable);
+        }
     }
 
     private void pairDevice(boolean result) {

@@ -5,6 +5,8 @@ package com.eleks.securedatastorage.utils;
  */
 public class Constants {
 
+    public static final long DEVICE_OPERATION_DELAY = 30000;
+
     public static class Extras {
         public static final String PHONE_ID = "phone_id";
     }
