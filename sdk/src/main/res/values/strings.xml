@@ -3,4 +3,7 @@
     <string name="ask_user_dialog_negative_answer">No</string>
     <string name="ask_user_dialog_positive_answer">Yes</string>
     <string name="ask_user_about_secure_storage">Would you prefer use secure storage?</string>
+    <string name="can_not_get_paired_device">Can not get paired wearable device.</string>
+    <string name="can_not_get_device_list">Can not get list of wearable devices.</string>
+    <string name="can_not_get_device_half_of_key">Can not get security information from wearable.</string>
 </resources>

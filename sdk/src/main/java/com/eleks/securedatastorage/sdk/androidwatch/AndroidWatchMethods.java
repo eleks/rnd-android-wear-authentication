@@ -1,8 +1,10 @@
 package com.eleks.securedatastorage.sdk.androidwatch;
 
+import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.eleks.securedatastorage.sdk.interfaces.OnGetDeviceList;
 import com.eleks.securedatastorage.sdk.utils.Constants;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.MessageApi;
@@ -11,6 +13,7 @@ import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
@@ -21,77 +24,68 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class AndroidWatchMethods implements MessageApi.MessageListener {
 
-    private GoogleApiClient mClient;
+    private static GoogleApiClient sWearableApiClient;
     private Context mContext;
     private MessageApi.MessageListener mMessageListener;
 
     public AndroidWatchMethods(Context context) {
         mContext = context;
-        final GoogleApiClient client = getGoogleApiClient(mContext);
-        Wearable.MessageApi.addListener(client, this);
+        getGoogleApiClient(mContext);
+        Wearable.MessageApi.addListener(sWearableApiClient, this);
     }
 
-    public boolean checkIfWearableConnected(String deviceId) {
-        final Lock lock = new ReentrantLock();
-        final boolean[] stillWaiting = {true};
-        final boolean[] result = new boolean[1];
-        lock.lock();
-        retrieveDeviceNode(new Callback() {
-            @Override
-            public void findResult(boolean isDeviceExist) {
-                if (isDeviceExist) {
-                    result[0] = true;
-                }
-                stillWaiting[0] = false;
-            }
 
-        }, deviceId);
-        try {
-            while (stillWaiting[0]) ;
-            return result[0];
-        } finally {
-            lock.unlock();
+    private GoogleApiClient getGoogleApiClient(Context context) {
+        if (sWearableApiClient == null)
+            sWearableApiClient = new GoogleApiClient.Builder(context)
+                    .addApi(Wearable.API)
+                    .build();
+        return sWearableApiClient;
+    }
+
+    public void disconnectWearableClient() {
+        if (sWearableApiClient.isConnected()) {
+            sWearableApiClient.disconnect();
         }
     }
 
-    private GoogleApiClient getGoogleApiClient(Context context) {
-        if (mClient == null)
-            mClient = new GoogleApiClient.Builder(context)
-                    .addApi(Wearable.API)
-                    .build();
-        return mClient;
-    }
-
-    public void sendMessage(String deviceId, String message, byte[] data) {
-        final GoogleApiClient client = getGoogleApiClient(mContext);
-        client.blockingConnect(Constants.G_WATCH.CONNECTION_TIME_OUT_MS, TimeUnit.MILLISECONDS);
-        Wearable.MessageApi.sendMessage(client, deviceId, message, data);
-        client.disconnect();
-    }
-
-    private void retrieveDeviceNode(final Callback callback, final String deviceId) {
-        final GoogleApiClient client = getGoogleApiClient(mContext);
+    public void sendMessage(final String deviceId, final String message, final byte[] data) {
         new Thread(new Runnable() {
-
             @Override
             public void run() {
-                client.blockingConnect
-                        (Constants.G_WATCH.CONNECTION_TIME_OUT_MS, TimeUnit.MILLISECONDS);
-                NodeApi.GetConnectedNodesResult result =
-                        Wearable.NodeApi.getConnectedNodes(client).await();
-                List<Node> nodes = result.getNodes();
-                if (nodes.size() > 0 && !TextUtils.isEmpty(deviceId)) {
-                    for (Node node : nodes) {
-                        if (deviceId.toLowerCase().equals(node.getId().toLowerCase())) {
-                            callback.findResult(true);
-                            break;
-                        }
-                    }
-                    callback.findResult(false);
-                } else {
-                    callback.findResult(false);
+                if (!sWearableApiClient.isConnected()) {
+                    sWearableApiClient.blockingConnect(
+                            Constants.AndroidWatch.CONNECTION_TIME_OUT_MS, TimeUnit.MILLISECONDS);
                 }
-                client.disconnect();
+                Wearable.MessageApi.sendMessage(sWearableApiClient, deviceId, message, data);
+            }
+        }).start();
+
+    }
+
+    public void getWearableDevicesList(final OnGetDeviceList callback) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                sWearableApiClient.blockingConnect
+                        (Constants.AndroidWatch.CONNECTION_TIME_OUT_MS, TimeUnit.MILLISECONDS);
+                NodeApi.GetConnectedNodesResult result =
+                        Wearable.NodeApi.getConnectedNodes(sWearableApiClient).await();
+                List<Node> nodes = result.getNodes();
+                List<String> devices = null;
+                if (nodes.size() > 0) {
+                    devices = new ArrayList<>();
+                    for (Node node : nodes) {
+                        devices.add(node.getId().toLowerCase());
+                    }
+                }
+                final List<String> finalDevices = devices;
+                ((Activity) mContext).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        callback.foundDevices(finalDevices);
+                    }
+                });
             }
         }).start();
     }
@@ -101,13 +95,16 @@ public class AndroidWatchMethods implements MessageApi.MessageListener {
     }
 
     @Override
-    public void onMessageReceived(MessageEvent messageEvent) {
+    public void onMessageReceived(final MessageEvent messageEvent) {
         if (mMessageListener != null) {
-            mMessageListener.onMessageReceived(messageEvent);
+            ((Activity) mContext).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mMessageListener.onMessageReceived(messageEvent);
+                }
+            });
+
         }
     }
 
-    private interface Callback {
-        void findResult(final boolean isDeviceExist);
-    }
 }

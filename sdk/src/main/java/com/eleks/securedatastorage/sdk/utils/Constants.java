@@ -30,7 +30,8 @@ public class Constants {
         public static final String ATTRIBUTES_FILE_NAME = "Attributes.dat";
     }
 
-    public static class G_WATCH {
+    public static class AndroidWatch {
         public static final long CONNECTION_TIME_OUT_MS = 1000;
+        public static final long DEVICE_OPERATION_DELAY = 30000;
     }
 }
