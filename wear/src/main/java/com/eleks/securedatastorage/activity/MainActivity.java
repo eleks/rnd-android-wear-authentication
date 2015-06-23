@@ -3,7 +3,6 @@ package com.eleks.securedatastorage.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.wearable.view.WatchViewStub;
 import android.view.View;
@@ -39,7 +38,7 @@ public class MainActivity extends Activity {
                 okButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        new PairDeviceTask().execute(true);
+                        pairDevice(true);
                         finish();
                     }
                 });
@@ -47,7 +46,7 @@ public class MainActivity extends Activity {
                 cancelButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        new PairDeviceTask().execute(false);
+                        pairDevice(false);
                         finish();
                     }
                 });
@@ -59,19 +58,18 @@ public class MainActivity extends Activity {
         mPhoneId = getIntent().getExtras().getString(Constants.Extras.PHONE_ID, null);
     }
 
-    private class PairDeviceTask extends AsyncTask<Boolean, Void, Void> {
-
-        @Override
-        protected Void doInBackground(Boolean... booleans) {
-            boolean result = booleans[0];
-            if (result) {
-                new AndroidWatchSecurityManager(MainActivity.this).setPhoneId(mPhoneId);
-            }
-            String stringResult = String.valueOf(result);
-            byte[] data = stringResult.getBytes();
-            new AndroidWatchMethods(MainActivity.this).sendMessage(mPhoneId,
-                    AndroidWatchMessages.Responses.SHOULD_USE_THIS_DEVICE_FOR_SECURE_STORAGE, data);
-            return null;
+    private void pairDevice(boolean result) {
+        if (result) {
+            new AndroidWatchSecurityManager(MainActivity.this).setPhoneId(mPhoneId);
         }
+        byte[] data = new byte[1];
+        if (result) {
+            data[0] = 1;
+        } else {
+            data[0] = 0;
+        }
+        new AndroidWatchMethods(MainActivity.this).sendMessage(mPhoneId,
+                AndroidWatchMessages.Responses.SHOULD_USE_THIS_DEVICE_FOR_SECURE_STORAGE, data);
     }
+
 }
