@@ -1,4 +1,4 @@
-package com.eleks.securedatastorage.sdk.gwatch;
+package com.eleks.securedatastorage.sdk.androidwatch;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -19,13 +19,13 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * Created by Serhiy.Krasovskyy on 22.06.2015.
  */
-public class GWatchMethods implements MessageApi.MessageListener {
+public class AndroidWatchMethods implements MessageApi.MessageListener {
 
     private GoogleApiClient mClient;
     private Context mContext;
     private MessageApi.MessageListener mMessageListener;
 
-    public GWatchMethods(Context context) {
+    public AndroidWatchMethods(Context context) {
         mContext = context;
         final GoogleApiClient client = getGoogleApiClient(mContext);
         Wearable.MessageApi.addListener(client, this);

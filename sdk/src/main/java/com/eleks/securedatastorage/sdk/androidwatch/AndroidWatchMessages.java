@@ -1,9 +1,9 @@
-package com.eleks.securedatastorage.sdk.gwatch;
+package com.eleks.securedatastorage.sdk.androidwatch;
 
 /**
  * Created by Serhiy.Krasovskyy on 22.06.2015.
  */
-public class GWatchMessages {
+public class AndroidWatchMessages {
 
     public static class Requests {
         public static final String SHOULD_USE_THIS_DEVICE_FOR_SECURE_STORAGE =

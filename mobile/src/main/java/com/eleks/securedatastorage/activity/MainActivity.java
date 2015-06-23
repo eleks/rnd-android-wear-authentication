@@ -9,8 +9,8 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.eleks.securedatastorage.R;
-import com.eleks.securedatastorage.sdk.gwatch.GWatchMessages;
-import com.eleks.securedatastorage.sdk.gwatch.GWatchMethods;
+import com.eleks.securedatastorage.sdk.androidwatch.AndroidWatchMessages;
+import com.eleks.securedatastorage.sdk.androidwatch.AndroidWatchMethods;
 import com.eleks.securedatastorage.sdk.storage.SecureStorageManager;
 import com.eleks.securedatastorage.utils.Constants;
 
@@ -77,8 +77,8 @@ public class MainActivity extends ActionBarActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            GWatchMethods gWatchMethods = new GWatchMethods(MainActivity.this);
-            gWatchMethods.sendMessage("49db30f6", GWatchMessages.Requests.SHOULD_USE_THIS_DEVICE_FOR_SECURE_STORAGE, null);
+            AndroidWatchMethods androidWatchMethods = new AndroidWatchMethods(MainActivity.this);
+            androidWatchMethods.sendMessage("49db30f6", AndroidWatchMessages.Requests.SHOULD_USE_THIS_DEVICE_FOR_SECURE_STORAGE, null);
             return null;
         }
     }
