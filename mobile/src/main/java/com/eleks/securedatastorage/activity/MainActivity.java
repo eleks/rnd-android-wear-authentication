@@ -7,12 +7,15 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.eleks.securedatastorage.R;
-import com.eleks.securedatastorage.sdk.androidwatch.AndroidWatchMessages;
-import com.eleks.securedatastorage.sdk.androidwatch.AndroidWatchMethods;
+import com.eleks.securedatastorage.sdk.androidwatch.AndroidWatchSecureData;
+import com.eleks.securedatastorage.sdk.interfaces.OnGetPairedDeviceId;
 import com.eleks.securedatastorage.sdk.storage.SecureStorageManager;
 import com.eleks.securedatastorage.utils.Constants;
+
+import java.io.IOException;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -58,9 +61,35 @@ public class MainActivity extends ActionBarActivity {
         testButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new SendMessageTask().execute();
+                final AndroidWatchSecureData androidWatchSecureData =
+                        new AndroidWatchSecureData(MainActivity.this);
+                androidWatchSecureData.getPairedDeviceId(new OnGetPairedDeviceId() {
+                    @Override
+                    public void getError(String errorMessage) {
+                        Toast.makeText(MainActivity.this, errorMessage, Toast.LENGTH_LONG).show();
+                        closeAndroidWatchSecureData(androidWatchSecureData);
+                    }
+
+                    @Override
+                    public void receivedDeviceId(final String deviceId) {
+                        String message = "Doesn't exist paired device";
+                        if (!TextUtils.isEmpty(deviceId)) {
+                            message = "Device Id = " + deviceId;
+                        }
+                        Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
+                        closeAndroidWatchSecureData(androidWatchSecureData);
+                    }
+                });
             }
         });
+    }
+
+    private void closeAndroidWatchSecureData(AndroidWatchSecureData androidWatchSecureData) {
+        try {
+            androidWatchSecureData.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private boolean isPasswordValid(String password) {
@@ -73,12 +102,11 @@ public class MainActivity extends ActionBarActivity {
         return true;
     }
 
-    private class SendMessageTask extends AsyncTask<Void, Void, Void> {
+    private class SendMessageTask extends AsyncTask<Void, String, Void> {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            AndroidWatchMethods androidWatchMethods = new AndroidWatchMethods(MainActivity.this);
-            androidWatchMethods.sendMessage("49db30f6", AndroidWatchMessages.Requests.SHOULD_USE_THIS_DEVICE_FOR_SECURE_STORAGE, null);
+
             return null;
         }
     }
