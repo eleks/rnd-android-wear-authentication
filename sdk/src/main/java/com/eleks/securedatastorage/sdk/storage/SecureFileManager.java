@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.eleks.securedatastorage.sdk.interfaces.OnGetHalfOfKeyListener;
+import com.eleks.securedatastorage.sdk.interfaces.WearableDeviceError;
 import com.eleks.securedatastorage.sdk.interfaces.WearableSecureDataInterface;
 import com.eleks.securedatastorage.sdk.model.DataFile;
 import com.eleks.securedatastorage.sdk.model.DataHolder;
@@ -57,7 +58,7 @@ public class SecureFileManager {
             new WearableManager(mContext, mWearableInterface)
                     .getDeviceHalfOfKey(null, new OnGetHalfOfKeyListener() {
                         @Override
-                        public void getError(String errorMessage) {
+                        public void getError(WearableDeviceError error, String errorMessage) {
 
                         }
 

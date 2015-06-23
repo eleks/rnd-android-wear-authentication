@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.eleks.securedatastorage.R;
 import com.eleks.securedatastorage.sdk.androidwatch.AndroidWatchSecureData;
 import com.eleks.securedatastorage.sdk.interfaces.OnGetPairedDeviceId;
+import com.eleks.securedatastorage.sdk.interfaces.WearableDeviceError;
 import com.eleks.securedatastorage.sdk.storage.SecureStorageManager;
 import com.eleks.securedatastorage.utils.Constants;
 
@@ -65,7 +66,7 @@ public class MainActivity extends ActionBarActivity {
                         new AndroidWatchSecureData(MainActivity.this);
                 androidWatchSecureData.getPairedDeviceId(new OnGetPairedDeviceId() {
                     @Override
-                    public void getError(String errorMessage) {
+                    public void getError(WearableDeviceError error, String errorMessage) {
                         Toast.makeText(MainActivity.this, errorMessage, Toast.LENGTH_LONG).show();
                         closeAndroidWatchSecureData(androidWatchSecureData);
                     }

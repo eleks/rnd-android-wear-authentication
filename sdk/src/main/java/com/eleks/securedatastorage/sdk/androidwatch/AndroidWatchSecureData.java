@@ -8,6 +8,7 @@ import com.eleks.securedatastorage.sdk.interfaces.OnGetError;
 import com.eleks.securedatastorage.sdk.interfaces.OnGetHalfOfKeyListener;
 import com.eleks.securedatastorage.sdk.interfaces.OnGetPairedDevice;
 import com.eleks.securedatastorage.sdk.interfaces.OnGetPairedDeviceId;
+import com.eleks.securedatastorage.sdk.interfaces.WearableDeviceError;
 import com.eleks.securedatastorage.sdk.interfaces.WearableSecureDataInterface;
 import com.eleks.securedatastorage.sdk.utils.Constants;
 import com.eleks.securedatastorage.securestoragesdk.R;
@@ -39,6 +40,7 @@ public class AndroidWatchSecureData implements WearableSecureDataInterface, Clos
                                    final OnGetHalfOfKeyListener getHalfOfKeyListener) {
         mWatchDogFlag = true;
         startWatchdogTimer(getHalfOfKeyListener,
+                WearableDeviceError.CAN_NOT_GET_HALF_OF_KEY_FROM_DEVICE,
                 mContext.getString(R.string.can_not_get_device_half_of_key));
         mAndroidWatchMethods = new AndroidWatchMethods(mContext);
         mAndroidWatchMethods.setMessageListener(new MessageApi.MessageListener() {
@@ -79,7 +81,8 @@ public class AndroidWatchSecureData implements WearableSecureDataInterface, Clos
                     }
                 } else {
                     getPairedDeviceListener
-                            .getError(mContext.getString(R.string.can_not_get_device_list));
+                            .getError(WearableDeviceError.CAN_NOT_GET_DEVICE_LIST,
+                                    mContext.getString(R.string.can_not_get_device_list));
                 }
             }
         });
@@ -88,7 +91,7 @@ public class AndroidWatchSecureData implements WearableSecureDataInterface, Clos
     @Override
     public void getPairedDeviceId(final OnGetPairedDeviceId getPairedDeviceId) {
         mWatchDogFlag = true;
-        startWatchdogTimer(getPairedDeviceId,
+        startWatchdogTimer(getPairedDeviceId, WearableDeviceError.CAN_NOT_GET_PAIRED_DEVICE,
                 mContext.getString(R.string.can_not_get_paired_device));
         mAndroidWatchMethods = new AndroidWatchMethods(mContext);
         mAndroidWatchMethods.setMessageListener(new MessageApi.MessageListener() {
@@ -120,7 +123,8 @@ public class AndroidWatchSecureData implements WearableSecureDataInterface, Clos
                     }
                 } else {
                     getPairedDeviceId
-                            .getError(mContext.getString(R.string.can_not_get_device_list));
+                            .getError(WearableDeviceError.CAN_NOT_GET_DEVICE_LIST,
+                                    mContext.getString(R.string.can_not_get_device_list));
                 }
             }
         });
@@ -132,13 +136,15 @@ public class AndroidWatchSecureData implements WearableSecureDataInterface, Clos
         }
     }
 
-    private void startWatchdogTimer(final OnGetError getErrorListener, final String errorMessage) {
+    private void startWatchdogTimer(final OnGetError getErrorListener,
+                                    final WearableDeviceError error,
+                                    final String errorMessage) {
         mWatchdogHandler = new Handler();
         mWatchdogRunnable = new Runnable() {
             @Override
             public void run() {
                 if (mWatchDogFlag) {
-                    getErrorListener.getError(errorMessage);
+                    getErrorListener.getError(error, errorMessage);
                 }
             }
         };
