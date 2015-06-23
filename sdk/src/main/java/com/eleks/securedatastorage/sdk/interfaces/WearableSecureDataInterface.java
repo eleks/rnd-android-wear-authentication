@@ -1,16 +1,16 @@
 package com.eleks.securedatastorage.sdk.interfaces;
 
-import android.content.Context;
-
 /**
  * Created by Serhiy.Krasovskyy on 18.06.2015.
  */
 public interface WearableSecureDataInterface {
 
-    void getDeviceHalfOfKey(Context context, String deviceId,
-                              OnGetHalfOfKeyListener getHalfOfKeyListener);
+    void getDeviceHalfOfKey(String deviceId, OnGetHalfOfKeyListener getHalfOfKeyListener);
 
-    void setDeviceHalfOfKey(OnSetHalfOfKeyListener setHalfOfKeyListener);
+    void setDeviceHalfOfKey(String deviceId, byte[] deviceHalfOfKey);
 
-    boolean isPairedDeviceConnected(Context context, String deviceId);
+    void isPairedDeviceConnected(String deviceId,
+                                 OnGetPairedDevice getPairedDeviceListener);
+
+    void getPairedDeviceId(OnGetPairedDeviceId getPairedDeviceId);
 }

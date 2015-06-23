@@ -55,7 +55,12 @@ public class SecureFileManager {
     public void storeData(final ArrayList<EntityHolder> entities) {
         if (mSecureAttributes.getSecretKey() == null) {
             new WearableManager(mContext, mWearableInterface)
-                    .getDeviceHalfOfKey(mContext, null, new OnGetHalfOfKeyListener() {
+                    .getDeviceHalfOfKey(null, new OnGetHalfOfKeyListener() {
+                        @Override
+                        public void getError(String errorMessage) {
+                            
+                        }
+
                         @Override
                         public void OnGetHalfOfKey(byte[] deviceHalfOfKey) {
                             if (deviceHalfOfKey != null) {

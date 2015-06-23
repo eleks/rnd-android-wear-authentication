@@ -20,11 +20,10 @@ public class WearableManager {
         this.mWearableInterface = wearableInterface;
     }
 
-    public void getDeviceHalfOfKey(Context context, String deviceId,
-                                   OnGetHalfOfKeyListener getHalfOfKeyListener) {
+    public void getDeviceHalfOfKey(String deviceId, OnGetHalfOfKeyListener getHalfOfKeyListener) {
         this.mGetHalfOfKeyListener = getHalfOfKeyListener;
         if (mWearableInterface != null) {
-            mWearableInterface.getDeviceHalfOfKey(context, deviceId, getHalfOfKeyListener);
+            mWearableInterface.getDeviceHalfOfKey(deviceId, getHalfOfKeyListener);
         } else {
             new PasswordDialog(mContext).show(getHalfOfKeyListener);
         }
