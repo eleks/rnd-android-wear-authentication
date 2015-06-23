@@ -58,7 +58,7 @@ public class SecureFileManager {
                     .getDeviceHalfOfKey(null, new OnGetHalfOfKeyListener() {
                         @Override
                         public void getError(String errorMessage) {
-                            
+
                         }
 
                         @Override
