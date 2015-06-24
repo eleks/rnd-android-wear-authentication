@@ -3,7 +3,6 @@ package com.eleks.securedatastorage.sdk.dialogs;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +20,7 @@ import java.util.ArrayList;
  */
 public class PasswordDialog extends DialogFragment {
 
+    public static final String TAG = PasswordDialog.class.getName();
     private ViewGroup mParent;
     private View mView;
     private ArrayList<OnOkButtonClickListener> mListeners;
