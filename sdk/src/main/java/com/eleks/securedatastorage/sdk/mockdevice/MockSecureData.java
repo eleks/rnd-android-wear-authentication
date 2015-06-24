@@ -29,7 +29,7 @@ public class MockSecureData implements WearableSecureDataInterface {
         if (!TextUtils.isEmpty(deviceId) && Constants.MockDevice.DEVICE_ID.equals(deviceId)) {
             File keyFile = new File(mContext.getFilesDir(), Constants.MockDevice.KEY_FILE_NAME);
             if (keyFile.exists()) {
-                byte[] deviceHalfOfKey = IOHelper.loadFileSources(keyFile);
+                byte[] deviceHalfOfKey = IOHelper.getFileSourcesToByteArray(keyFile);
                 getHalfOfKeyListener.OnGetHalfOfKey(deviceHalfOfKey);
             } else {
                 getHalfOfKeyListener.OnGetHalfOfKey(null);
