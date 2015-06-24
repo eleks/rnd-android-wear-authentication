@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 
 /**
@@ -27,7 +28,7 @@ public class IOHelper {
         return text.toString();
     }
 
-    public static byte[] loadFileSources(File file) {
+    public static byte[] getFileSourcesToByteArray(File file) {
         byte[] result = null;
         if (file.exists()) {
             result = new byte[(int) file.length()];
@@ -49,6 +50,12 @@ public class IOHelper {
             }
         }
         return result;
+    }
+
+    public static void writeFileSources(File file, String sources) throws IOException {
+        FileWriter fileWriter = new FileWriter(file);
+        fileWriter.write(sources);
+        fileWriter.close();
     }
 
     public static void writeFileSources(File file, byte[] data) {
