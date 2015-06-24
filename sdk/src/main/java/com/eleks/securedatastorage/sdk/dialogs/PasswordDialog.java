@@ -23,7 +23,6 @@ public class PasswordDialog extends DialogFragment {
 
     private ViewGroup mParent;
     private View mView;
-    private Context mContext;
     private ArrayList<OnOkButtonClickListener> mListeners;
 
     public static PasswordDialog getInstance() {
@@ -42,7 +41,6 @@ public class PasswordDialog extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         mView = inflater.inflate(R.layout.fragment_password_dialog, mParent);
-        mContext = mView.getContext();
         builder.setView(mView);
         Dialog dialog = builder.create();
         dialog.setCanceledOnTouchOutside(true);
