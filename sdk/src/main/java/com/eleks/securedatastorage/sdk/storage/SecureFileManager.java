@@ -23,34 +23,14 @@ import java.util.ArrayList;
 public class SecureFileManager {
 
     private final Context mContext;
-    private final SecureAttributes mSecureAttributes;
+    private SecureAttributes mSecureAttributes;
 
-    public SecureFileManager(Context context) {
+    public SecureFileManager(Context context, SecureAttributes secureAttributes) {
         this.mContext = context;
-        this.mSecureAttributes = getSecureAttributes();
+        this.mSecureAttributes = secureAttributes;
     }
 
-    private SecureAttributes getSecureAttributes() {
-        File secureAttributesFile =
-                new File(mContext.getFilesDir(), Constants.Security.ATTRIBUTES_FILE_NAME);
-        SecureAttributes result = null;
-        if (secureAttributesFile.exists()) {
-            try {
-                String fileSources = IOHelper.getFileSources(secureAttributesFile);
-                result = (SecureAttributes) getObjectFromJson(fileSources, SecureAttributes.class);
-            } catch (IOException e) {
-                //TODO need to implement process of this exception
-            }
-        } else {
-            result = new SecureAttributes();
-        }
-        return result;
-    }
-
-    public void storeData(final ArrayList<EntityHolder> entities, byte[] deviceHalfOfKey) {
-        if (deviceHalfOfKey != null) {
-            mSecureAttributes.setDeviceHalfOfKey(deviceHalfOfKey);
-        }
+    public void storeData(final ArrayList<EntityHolder> entities) {
         //TODO need to implement
     }
 
