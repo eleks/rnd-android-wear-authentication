@@ -25,15 +25,18 @@ public class SecureAttributesManager {
         IOHelper.writeFileSources(secureAttributesFile, json);
     }
 
-    public static SecureAttributes loadSecureAttributes(Context context)
-            throws IOException, JsonSyntaxException {
+    public static SecureAttributes loadSecureAttributes(Context context) {
         File secureAttributesFile =
                 new File(context.getFilesDir(), Constants.Security.ATTRIBUTES_FILE_NAME);
         SecureAttributes result = null;
         if (secureAttributesFile.exists()) {
-            String json = IOHelper.getFileSources(secureAttributesFile);
-            Gson gson = new Gson();
-            result = gson.fromJson(json, SecureAttributes.class);
+            try {
+                String json = IOHelper.getFileSources(secureAttributesFile);
+                Gson gson = new Gson();
+                result = gson.fromJson(json, SecureAttributes.class);
+            } catch (IOException | JsonSyntaxException e) {
+                //do nothing
+            }
         }
         return result;
     }
