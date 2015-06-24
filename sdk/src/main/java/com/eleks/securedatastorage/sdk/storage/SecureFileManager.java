@@ -3,9 +3,6 @@ package com.eleks.securedatastorage.sdk.storage;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.eleks.securedatastorage.sdk.interfaces.OnGetDeviceHalfOfKey;
-import com.eleks.securedatastorage.sdk.interfaces.WearableDeviceError;
-import com.eleks.securedatastorage.sdk.interfaces.WearableSecureDataInterface;
 import com.eleks.securedatastorage.sdk.model.DataFile;
 import com.eleks.securedatastorage.sdk.model.DataHolder;
 import com.eleks.securedatastorage.sdk.model.EntityHolder;
@@ -13,7 +10,6 @@ import com.eleks.securedatastorage.sdk.model.SecureAttributes;
 import com.eleks.securedatastorage.sdk.security.Encryption;
 import com.eleks.securedatastorage.sdk.utils.Constants;
 import com.eleks.securedatastorage.sdk.utils.IOHelper;
-import com.eleks.securedatastorage.sdk.wearable.WearableManager;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
@@ -27,12 +23,10 @@ import java.util.ArrayList;
 public class SecureFileManager {
 
     private final Context mContext;
-    private final WearableSecureDataInterface mWearableInterface;
     private final SecureAttributes mSecureAttributes;
 
-    public SecureFileManager(Context context, WearableSecureDataInterface wearableInterface) {
+    public SecureFileManager(Context context) {
         this.mContext = context;
-        this.mWearableInterface = wearableInterface;
         this.mSecureAttributes = getSecureAttributes();
     }
 
@@ -48,33 +42,16 @@ public class SecureFileManager {
                 //TODO need to implement process of this exception
             }
         } else {
-            result = new SecureAttributes(null);
+            result = new SecureAttributes();
         }
         return result;
     }
 
-    public void storeData(final ArrayList<EntityHolder> entities) {
-        if (mSecureAttributes.getSecretKey() == null) {
-            new WearableManager(mContext, mWearableInterface)
-                    .getDeviceHalfOfKey(null, new OnGetDeviceHalfOfKey() {
-                        @Override
-                        public void getError(WearableDeviceError error, String errorMessage) {
-
-                        }
-
-                        @Override
-                        public void OnGetHalfOfKey(byte[] deviceHalfOfKey) {
-                            if (deviceHalfOfKey != null) {
-                                mSecureAttributes.setDeviceHalfOfKey(deviceHalfOfKey);
-                                storeData(entities);
-                            } else {
-                                //TODO process it
-                            }
-                        }
-                    });
-        } else {
-            //TODO process it
+    public void storeData(final ArrayList<EntityHolder> entities, byte[] deviceHalfOfKey) {
+        if (deviceHalfOfKey != null) {
+            mSecureAttributes.setDeviceHalfOfKey(deviceHalfOfKey);
         }
+        //TODO need to implement
     }
 
     public String getData(String entityName) {
