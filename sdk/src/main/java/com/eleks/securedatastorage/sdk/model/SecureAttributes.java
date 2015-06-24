@@ -1,11 +1,9 @@
 package com.eleks.securedatastorage.sdk.model;
 
 import com.eleks.securedatastorage.sdk.security.SecurityUtils;
-import com.eleks.securedatastorage.sdk.utils.Constants;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.IOException;
-import java.util.Random;
 
 import javax.crypto.SecretKey;
 
@@ -13,19 +11,17 @@ import javax.crypto.SecretKey;
  * Created by Serhiy.Krasovskyy on 18.06.2015.
  */
 public class SecureAttributes {
+    @SerializedName("WearableDeviceId")
+    private String deviceId;
     @SerializedName("PhoneHalfOfKey")
     private byte[] mPhoneHalfOfKey;
-    @SerializedName("WearDeviceHalfOfKey")
     private byte[] mWearDeviceHalfOfKey;
     @SerializedName("Salt")
     private String mSalt;
     @SerializedName("InitialVector")
     private byte[] mInitialVector;
 
-    public SecureAttributes(byte[] phoneHalfOfKey) {
-        this.mPhoneHalfOfKey = phoneHalfOfKey;
-        this.mInitialVector = getRandomInitialVector();
-        this.mSalt = getRandomSalt();
+    public SecureAttributes() {
     }
 
     public void setDeviceHalfOfKey(byte[] wearDeviceHalfOfKey) {
@@ -55,26 +51,27 @@ public class SecureAttributes {
         return mSalt;
     }
 
+    public void setSalt(String mSalt) {
+        this.mSalt = mSalt;
+    }
+
     public byte[] getInitialVector() {
         return mInitialVector;
     }
 
-    private String getRandomSalt() {
-        StringBuilder result = new StringBuilder();
-        Random random = new Random();
-        for (int i = 0; i < Constants.Security.SALT_LENGTH; i++) {
-            result.append(
-                    Character.toString((char) random.nextInt(Constants.Security.MAX_BYTE_VALUE)));
-        }
-        return result.toString();
+    public void setInitialVector(byte[] mInitialVector) {
+        this.mInitialVector = mInitialVector;
     }
 
-    private byte[] getRandomInitialVector() {
-        byte[] result = new byte[Constants.Security.INITIAL_VECTOR_LENGTH];
-        Random random = new Random();
-        for (int i = 0; i < Constants.Security.INITIAL_VECTOR_LENGTH; i++) {
-            result[i] = (byte) random.nextInt(Constants.Security.MAX_BYTE_VALUE);
-        }
-        return result;
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
+    }
+
+    public void setPhoneHalfOfKey(byte[] mPhoneHalfOfKey) {
+        this.mPhoneHalfOfKey = mPhoneHalfOfKey;
     }
 }
