@@ -1,6 +1,5 @@
 package com.eleks.securedatastorage.activity;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
@@ -13,6 +12,7 @@ import com.eleks.securedatastorage.R;
 import com.eleks.securedatastorage.sdk.androidwatch.AndroidWatchSecureData;
 import com.eleks.securedatastorage.sdk.interfaces.OnGetPairedDeviceId;
 import com.eleks.securedatastorage.sdk.interfaces.WearableDeviceError;
+import com.eleks.securedatastorage.sdk.mockdevice.MockSecureData;
 import com.eleks.securedatastorage.sdk.storage.SecureStorageManager;
 import com.eleks.securedatastorage.utils.Constants;
 
@@ -31,17 +31,17 @@ public class MainActivity extends ActionBarActivity {
 
     private void initControls() {
         final SecureStorageManager secureStorageManager =
-                new SecureStorageManager(MainActivity.this, null);
+                new SecureStorageManager(MainActivity.this, new MockSecureData(MainActivity.this));
         mUserNameEditText = (EditText) findViewById(R.id.user_name);
-        String userName = secureStorageManager.getString(Constants.Extras.USER_NAME_ENTITY, null);
-        if (!TextUtils.isEmpty(userName)) {
-            mUserNameEditText.setText(userName);
-        }
+//        String userName = secureStorageManager.getString(Constants.Extras.USER_NAME_ENTITY, null);
+//        if (!TextUtils.isEmpty(userName)) {
+//            mUserNameEditText.setText(userName);
+//        }
         mPasswordEditText = (EditText) findViewById(R.id.password);
-        String password = secureStorageManager.getString(Constants.Extras.PASSWORD_ENTITY, null);
-        if (!TextUtils.isEmpty(password)) {
-            mPasswordEditText.setText(password);
-        }
+//        String password = secureStorageManager.getString(Constants.Extras.PASSWORD_ENTITY, null);
+//        if (!TextUtils.isEmpty(password)) {
+//            mPasswordEditText.setText(password);
+//        }
         Button loginButton = (Button) findViewById(R.id.login_button);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
