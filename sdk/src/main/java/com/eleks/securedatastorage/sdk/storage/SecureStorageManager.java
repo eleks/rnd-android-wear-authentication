@@ -77,7 +77,7 @@ public class SecureStorageManager {
                             @Override
                             public void onClick(String password) {
                                 passwordDialog.dismiss();
-                                processgetPairedDevice(password);
+                                processGetPairedDevice(password);
                             }
                         });
                         passwordDialog.show(((Activity) mContext).getFragmentManager(),
@@ -86,7 +86,7 @@ public class SecureStorageManager {
                 });
     }
 
-    private void processgetPairedDevice(final String password) {
+    private void processGetPairedDevice(final String password) {
         mWearableSecureInterface.getPairedDeviceId(new OnGetPairedDeviceId() {
             @Override
             public void receivedDeviceId(String deviceId) {
