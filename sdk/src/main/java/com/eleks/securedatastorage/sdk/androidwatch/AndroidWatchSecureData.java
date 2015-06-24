@@ -147,10 +147,4 @@ public class AndroidWatchSecureData implements WearableSecureDataInterface {
                 Constants.AndroidWatch.DEVICE_OPERATION_DELAY);
     }
 
-//    @Override
-//    public void close() throws IOException {
-//        if (mAndroidWatchMethods != null) {
-//            mAndroidWatchMethods.disconnectWearableClient();
-//        }
-//    }
 }

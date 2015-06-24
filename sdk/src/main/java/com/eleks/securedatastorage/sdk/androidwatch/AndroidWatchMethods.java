@@ -47,12 +47,6 @@ public class AndroidWatchMethods implements MessageApi.MessageListener {
         return sWearableApiClient;
     }
 
-//    public void disconnectWearableClient() {
-//        if (sWearableApiClient.isConnected()) {
-//            sWearableApiClient.disconnect();
-//        }
-//    }
-
     public void sendMessage(final String deviceId, final String message, final byte[] data) {
         new Thread(new Runnable() {
             @Override

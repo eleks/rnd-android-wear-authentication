@@ -66,7 +66,6 @@ public class MainActivity extends ActionBarActivity {
                     @Override
                     public void getError(WearableDeviceError error, String errorMessage) {
                         Toast.makeText(MainActivity.this, errorMessage, Toast.LENGTH_LONG).show();
-                        //closeAndroidWatchSecureData(androidWatchSecureData);
                     }
 
                     @Override
@@ -76,20 +75,11 @@ public class MainActivity extends ActionBarActivity {
                             message = "Device Id = " + deviceId;
                         }
                         Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
-                        //closeAndroidWatchSecureData(androidWatchSecureData);
                     }
                 });
             }
         });
     }
-
-//    private void closeAndroidWatchSecureData(AndroidWatchSecureData androidWatchSecureData) {
-//        try {
-//            androidWatchSecureData.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
 
     private boolean isPasswordValid(String password) {
         //TODO Need to implement
@@ -99,15 +89,6 @@ public class MainActivity extends ActionBarActivity {
     private boolean isUserNameValid(String userName) {
         //TODO Need to implement
         return true;
-    }
-
-    private class SendMessageTask extends AsyncTask<Void, String, Void> {
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-
-            return null;
-        }
     }
 
 }
