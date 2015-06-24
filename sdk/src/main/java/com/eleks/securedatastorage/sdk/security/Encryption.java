@@ -322,6 +322,11 @@ public class Encryption {
         return new SecretKeySpec(tmp.getEncoded(), mBuilder.getAlgorithm());
     }
 
+    public SecretKey getSecretKey()
+            throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeySpecException {
+        return getSecretKey(hashTheKey(mBuilder.getKey()));
+    }
+
     /**
      * takes in a simple string and performs an sha1 hash
      * that is 128 bits long...we then base64 encode it
