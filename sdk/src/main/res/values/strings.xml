@@ -6,4 +6,8 @@
     <string name="can_not_get_paired_device">Can not get paired wearable device.</string>
     <string name="can_not_get_device_list">Can not get list of wearable devices.</string>
     <string name="can_not_get_device_half_of_key">Can not get security information from wearable.</string>
+    <string name="enter_master_password_text">Please enter master password</string>
+    <string name="password_hint">Password</string>
+    <string name="ok_button_text">OK</string>
+    <string name="cancel_button_text">CANCEL</string>
 </resources>
