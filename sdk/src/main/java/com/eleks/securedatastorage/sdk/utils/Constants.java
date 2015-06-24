@@ -34,4 +34,9 @@ public class Constants {
         public static final long CONNECTION_TIME_OUT_MS = 1000;
         public static final long DEVICE_OPERATION_DELAY = 30000;
     }
+
+    public static class MockDevice {
+        public static final String DEVICE_ID = "sdgdgghe13ks";
+        public static final String KEY_FILE_NAME = "MockKey.dat";
+    }
 }
