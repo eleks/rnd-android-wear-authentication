@@ -2,7 +2,11 @@
     <string name="app_name">Secure Data Storage</string>
     <string name="password_hint">Password</string>
     <string name="user_name_hint">User name</string>
-    <string name="login_button_text">Login</string>
-    <string name="test_button_text">TEST</string>
+    <string name="store_credentials_button_text">Store credentials</string>
+    <string name="restore_credentials_button_text">Restore credentials</string>
+    <string name="init_security_storage_button_text">Init security storage</string>
+    <string name="security_storage_was_initialized_early_message">Security storage was initialized early.</string>
+    <string name="security_storage_is_not_initialized_message">Security storage is not initialized.</string>
+    <string name="security_storage_was_initialized_successfully_message">Security storage was initialized successfully.</string>
 
 </resources>

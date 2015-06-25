@@ -26,19 +26,27 @@
         android:textSize="18sp" />
 
     <Button
-        android:id="@+id/login_button"
+        android:id="@+id/store_credentials_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/password"
         android:layout_marginTop="30dp"
-        android:text="@string/login_button_text" />
+        android:text="@string/store_credentials_button_text" />
 
     <Button
-        android:id="@+id/test_button"
+        android:id="@+id/restore_credentials_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/login_button"
-        android:layout_marginTop="30dp"
-        android:text="@string/test_button_text" />
+        android:layout_below="@+id/store_credentials_button"
+        android:layout_marginTop="20dp"
+        android:text="@string/restore_credentials_button_text" />
+
+    <Button
+        android:id="@+id/init_security_storage_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/restore_credentials_button"
+        android:layout_marginTop="20dp"
+        android:text="@string/init_security_storage_button_text" />
 
 </RelativeLayout>

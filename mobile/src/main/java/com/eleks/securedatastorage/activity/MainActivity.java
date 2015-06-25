@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.eleks.securedatastorage.R;
 import com.eleks.securedatastorage.sdk.interfaces.OnGetDecryptedData;
+import com.eleks.securedatastorage.sdk.interfaces.OnInitSecureStorage;
 import com.eleks.securedatastorage.sdk.interfaces.WearableDeviceError;
 import com.eleks.securedatastorage.sdk.mockdevice.MockSecureData;
 import com.eleks.securedatastorage.sdk.storage.SecureStorageManager;
@@ -32,81 +33,109 @@ public class MainActivity extends ActionBarActivity {
         final SecureStorageManager secureStorageManager =
                 new SecureStorageManager(MainActivity.this, new MockSecureData(MainActivity.this));
         mUserNameEditText = (EditText) findViewById(R.id.user_name);
-//        String userName = secureStorageManager.getString(Constants.Extras.USER_NAME_ENTITY, null);
-//        if (!TextUtils.isEmpty(userName)) {
-//            mUserNameEditText.setText(userName);
-//        }
         mPasswordEditText = (EditText) findViewById(R.id.password);
-//        String password = secureStorageManager.getString(Constants.Extras.PASSWORD_ENTITY, null);
-//        if (!TextUtils.isEmpty(password)) {
-//            mPasswordEditText.setText(password);
-//        }
-        Button loginButton = (Button) findViewById(R.id.login_button);
-        loginButton.setOnClickListener(new View.OnClickListener() {
+
+        Button initSecureStorage = (Button) findViewById(R.id.init_security_storage_button);
+        initSecureStorage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String userName = mUserNameEditText.getText().toString();
-                String password = mPasswordEditText.getText().toString();
-                if (isUserNameValid(userName) && isPasswordValid(password)) {
-                    secureStorageManager.setString(Constants.Extras.USER_NAME_ENTITY, userName);
-                    secureStorageManager.setString(Constants.Extras.PASSWORD_ENTITY, password);
-                    secureStorageManager.apply();
+                if (!secureStorageManager.isSecureStorageInitialized()) {
+                    secureStorageManager.initSecureStorage(new OnInitSecureStorage() {
+                        @Override
+                        public void initSecureStorageSuccessfully() {
+                            Toast.makeText(MainActivity.this,
+                                    MainActivity.this
+                                            .getString(R.string.security_storage_was_initialized_successfully_message),
+                                    Toast.LENGTH_LONG)
+                                    .show();
+                        }
+
+                        @Override
+                        public void getError(WearableDeviceError error, String errorMessage) {
+                            Toast.makeText(MainActivity.this,
+                                    errorMessage, Toast.LENGTH_LONG).show();
+                        }
+                    });
+                } else {
+                    Toast.makeText(MainActivity.this,
+                            MainActivity.this
+                                    .getString(R.string.security_storage_was_initialized_early_message),
+                            Toast.LENGTH_LONG)
+                            .show();
                 }
             }
         });
 
-        Button testButton = (Button) findViewById(R.id.test_button);
-        testButton.setOnClickListener(new View.OnClickListener() {
+        Button storeCredentialsButton = (Button) findViewById(R.id.store_credentials_button);
+        storeCredentialsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                secureStorageManager
-                        .getString(Constants.Extras.USER_NAME_ENTITY, "default username",
-                                new OnGetDecryptedData() {
-                                    @Override
-                                    public void getDecryptedData(String data) {
-                                        if (!TextUtils.isEmpty(data)) {
-                                            mUserNameEditText.setText(data);
-                                        }
-                                    }
-
-                                    @Override
-                                    public void getError(WearableDeviceError error,
-                                                         String errorMessage) {
-                                        Toast.makeText(MainActivity.this, errorMessage,
-                                                Toast.LENGTH_LONG)
-                                                .show();
-                                    }
-                                });
-                secureStorageManager
-                        .getString(Constants.Extras.PASSWORD_ENTITY, "default password",
-                                new OnGetDecryptedData() {
-                                    @Override
-                                    public void getDecryptedData(String data) {
-                                        if (!TextUtils.isEmpty(data)) {
-                                            mPasswordEditText.setText(data);
-                                        }
-                                    }
-
-                                    @Override
-                                    public void getError(WearableDeviceError error,
-                                                         String errorMessage) {
-                                        Toast.makeText(MainActivity.this, errorMessage,
-                                                Toast.LENGTH_LONG)
-                                                .show();
-                                    }
-                                });
+                if (secureStorageManager.isSecureStorageInitialized()) {
+                    String userName = mUserNameEditText.getText().toString();
+                    String password = mPasswordEditText.getText().toString();
+                    secureStorageManager.setString(Constants.Extras.USER_NAME_ENTITY, userName);
+                    secureStorageManager.setString(Constants.Extras.PASSWORD_ENTITY, password);
+                    secureStorageManager.apply();
+                } else {
+                    Toast.makeText(MainActivity.this,
+                            MainActivity.this
+                                    .getString(R.string.security_storage_is_not_initialized_message),
+                            Toast.LENGTH_LONG)
+                            .show();
+                }
             }
         });
-    }
 
-    private boolean isPasswordValid(String password) {
-        //TODO Need to implement
-        return true;
-    }
+        Button restoreCredentialsButton = (Button) findViewById(R.id.restore_credentials_button);
+        restoreCredentialsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (secureStorageManager.isSecureStorageInitialized()) {
+                    secureStorageManager
+                            .getString(Constants.Extras.USER_NAME_ENTITY, "default username",
+                                    new OnGetDecryptedData() {
+                                        @Override
+                                        public void getDecryptedData(String data) {
+                                            if (!TextUtils.isEmpty(data)) {
+                                                mUserNameEditText.setText(data);
+                                            }
+                                        }
 
-    private boolean isUserNameValid(String userName) {
-        //TODO Need to implement
-        return true;
+                                        @Override
+                                        public void getError(WearableDeviceError error,
+                                                             String errorMessage) {
+                                            Toast.makeText(MainActivity.this, errorMessage,
+                                                    Toast.LENGTH_LONG)
+                                                    .show();
+                                        }
+                                    });
+                    secureStorageManager
+                            .getString(Constants.Extras.PASSWORD_ENTITY, "default password",
+                                    new OnGetDecryptedData() {
+                                        @Override
+                                        public void getDecryptedData(String data) {
+                                            if (!TextUtils.isEmpty(data)) {
+                                                mPasswordEditText.setText(data);
+                                            }
+                                        }
+
+                                        @Override
+                                        public void getError(WearableDeviceError error,
+                                                             String errorMessage) {
+                                            Toast.makeText(MainActivity.this, errorMessage,
+                                                    Toast.LENGTH_LONG)
+                                                    .show();
+                                        }
+                                    });
+                } else {
+                    Toast.makeText(MainActivity.this,
+                            MainActivity.this
+                                    .getString(R.string.security_storage_is_not_initialized_message),
+                            Toast.LENGTH_LONG)
+                            .show();
+                }
+            }
+        });
     }
 
 }
