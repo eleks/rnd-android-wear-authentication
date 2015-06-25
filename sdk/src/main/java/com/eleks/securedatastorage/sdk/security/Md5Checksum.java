@@ -45,7 +45,7 @@ public class Md5Checksum {
 
 
         try {
-            byte[] buffer = data.getBytes(Constants.DEFAULT_CHARSET_NAME);
+            byte[] buffer = data.getBytes(Constants.Security.DEFAULT_CHARSET_NAME);
             digest.update(buffer);
             byte[] md5sum = digest.digest();
             BigInteger bigInt = new BigInteger(1, md5sum);
