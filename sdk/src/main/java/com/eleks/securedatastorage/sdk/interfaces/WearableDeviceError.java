@@ -6,5 +6,6 @@ package com.eleks.securedatastorage.sdk.interfaces;
 public enum WearableDeviceError {
     CAN_NOT_GET_PAIRED_DEVICE,
     CAN_NOT_GET_HALF_OF_KEY_FROM_DEVICE,
+    SECURE_STORAGE_IS_NOT_INITIALIZED,
     CAN_NOT_GET_DEVICE_LIST
 }

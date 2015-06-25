@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import com.eleks.securedatastorage.sdk.dialogs.AskUserDialog;
 import com.eleks.securedatastorage.sdk.dialogs.ErrorDialog;
 import com.eleks.securedatastorage.sdk.dialogs.PasswordDialog;
+import com.eleks.securedatastorage.sdk.interfaces.OnGetDecryptedData;
 import com.eleks.securedatastorage.sdk.interfaces.OnGetDeviceHalfOfKey;
 import com.eleks.securedatastorage.sdk.interfaces.OnGetPairedDeviceId;
 import com.eleks.securedatastorage.sdk.interfaces.WearableDeviceError;
@@ -20,7 +21,6 @@ import com.eleks.securedatastorage.securestoragesdk.R;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.concurrent.CountDownLatch;
 
 /**
  * Created by Serhiy.Krasovskyy on 17.06.2015.
@@ -39,11 +39,11 @@ public class SecureStorageManager {
         mPreferences = new SecureStoragePreferences(context);
     }
 
-    public String getString(final String entityName, String defaultValue) {
-        final CountDownLatch latch = new CountDownLatch(1);
-        final String[] result = new String[1];
-        result[0] = defaultValue;
-        if (mPreferences.getShouldUseSecureStorage() == Constants.Preferences.SHOULD_USE) {
+    public void getString(final String entityName, String defaultValue,
+                          final OnGetDecryptedData getDecryptedData) {
+        final String[] result = {defaultValue};
+        //TODO need to change below line!
+        if (mPreferences.getShouldUseSecureStorage() != Constants.Preferences.SHOULD_USE) {
             final SecureAttributes secureAttributes = SecureAttributesManager
                     .loadSecureAttributes(mContext);
             if (secureAttributes != null && !TextUtils.isEmpty(secureAttributes.getDeviceId())) {
@@ -55,25 +55,20 @@ public class SecureStorageManager {
                                         secureAttributes.setDeviceHalfOfKey(deviceHalfOfKey);
                                         result[0] = new SecureFileManager(
                                                 mContext, secureAttributes).getData(entityName);
-                                        latch.countDown();
+                                        getDecryptedData.getDecryptedData(result[0]);
                                     }
 
                                     @Override
                                     public void getError(WearableDeviceError error,
                                                          String errorMessage) {
-                                        latch.countDown();
+                                        getDecryptedData.getError(error, errorMessage);
                                     }
                                 });
             } else {
-                //TODO need to implement
+                getDecryptedData.getError(WearableDeviceError.SECURE_STORAGE_IS_NOT_INITIALIZED,
+                        mContext.getString(R.string.secure_storage_is_not_initialized));
             }
         }
-        try {
-            latch.await();
-        } catch (InterruptedException e) {
-            //do nothing
-        }
-        return result[0];
     }
 
     public void setString(String entityName, String value) {
