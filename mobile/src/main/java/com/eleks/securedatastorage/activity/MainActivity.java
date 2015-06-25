@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.eleks.securedatastorage.R;
 import com.eleks.securedatastorage.sdk.interfaces.OnGetDecryptedData;
 import com.eleks.securedatastorage.sdk.interfaces.OnInitSecureStorage;
+import com.eleks.securedatastorage.sdk.interfaces.OnStoreData;
 import com.eleks.securedatastorage.sdk.interfaces.WearableDeviceError;
 import com.eleks.securedatastorage.sdk.mockdevice.MockSecureData;
 import com.eleks.securedatastorage.sdk.storage.SecureStorageManager;
@@ -71,11 +72,27 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onClick(View view) {
                 if (secureStorageManager.isSecureStorageInitialized()) {
-                    String userName = mUserNameEditText.getText().toString();
+                                        String userName = mUserNameEditText.getText().toString();
                     String password = mPasswordEditText.getText().toString();
+                    secureStorageManager.clearData();
                     secureStorageManager.setString(Constants.Extras.USER_NAME_ENTITY, userName);
                     secureStorageManager.setString(Constants.Extras.PASSWORD_ENTITY, password);
-                    secureStorageManager.apply();
+                    secureStorageManager.storeData(new OnStoreData() {
+                        @Override
+                        public void dataStoredSuccessfully() {
+                            Toast.makeText(MainActivity.this,
+                                    MainActivity.this
+                                            .getString(R.string.data_was_stored_successfully),
+                                    Toast.LENGTH_LONG)
+                                    .show();
+                        }
+
+                        @Override
+                        public void getError(WearableDeviceError error, String errorMessage) {
+                            Toast.makeText(MainActivity.this,
+                                    errorMessage, Toast.LENGTH_LONG).show();
+                        }
+                    });
                 } else {
                     Toast.makeText(MainActivity.this,
                             MainActivity.this

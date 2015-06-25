@@ -6,12 +6,12 @@ import android.content.DialogInterface;
 import android.text.TextUtils;
 
 import com.eleks.securedatastorage.sdk.dialogs.AskUserDialog;
-import com.eleks.securedatastorage.sdk.dialogs.ErrorDialog;
 import com.eleks.securedatastorage.sdk.dialogs.PasswordDialog;
 import com.eleks.securedatastorage.sdk.interfaces.OnGetDecryptedData;
 import com.eleks.securedatastorage.sdk.interfaces.OnGetDeviceHalfOfKey;
 import com.eleks.securedatastorage.sdk.interfaces.OnGetPairedDeviceId;
 import com.eleks.securedatastorage.sdk.interfaces.OnInitSecureStorage;
+import com.eleks.securedatastorage.sdk.interfaces.OnStoreData;
 import com.eleks.securedatastorage.sdk.interfaces.WearableDeviceError;
 import com.eleks.securedatastorage.sdk.interfaces.WearableSecureDataInterface;
 import com.eleks.securedatastorage.sdk.model.EntityHolder;
@@ -47,7 +47,6 @@ public class SecureStorageManager {
 
     public void getString(final String entityName, String defaultValue,
                           final OnGetDecryptedData getDecryptedData) {
-        final String[] result = {defaultValue};
         final SecureAttributes secureAttributes = SecureAttributesManager
                 .loadSecureAttributes(mContext);
         //TODO need to process if secure attributes is null
@@ -58,9 +57,9 @@ public class SecureStorageManager {
                                 @Override
                                 public void OnGetHalfOfKey(byte[] deviceHalfOfKey) {
                                     secureAttributes.setDeviceHalfOfKey(deviceHalfOfKey);
-                                    result[0] = new SecureFileManager(
-                                            mContext, secureAttributes).getData(entityName);
-                                    getDecryptedData.getDecryptedData(result[0]);
+                                    new SecureFileManager(
+                                            mContext, secureAttributes).getData(entityName,
+                                            getDecryptedData);
                                 }
 
                                 @Override
@@ -82,33 +81,32 @@ public class SecureStorageManager {
         mEntities.add(new EntityHolder(entityName, value));
     }
 
-    public void apply() {
-        //TODO need process situation if secure storage is not initialized
+    public void storeData(final OnStoreData storeData) {
         if (isSecureStorageInitialized()) {
-            storeDataSecurely();
+            storeDataSecurely(storeData);
+        } else {
+            storeData.getError(WearableDeviceError.SECURE_STORAGE_IS_NOT_INITIALIZED,
+                    mContext.getString(R.string.secure_storage_is_not_initialized));
         }
     }
 
-    private void storeDataSecurely() {
+    private void storeDataSecurely(final OnStoreData storeData) {
         final SecureAttributes secureAttributes = SecureAttributesManager
                 .loadSecureAttributes(mContext);
-        if (secureAttributes != null && !TextUtils.isEmpty(secureAttributes.getDeviceId())) {
-            mWearableSecureInterface.getDeviceHalfOfKey(secureAttributes.getDeviceId(),
-                    new OnGetDeviceHalfOfKey() {
-                        @Override
-                        public void OnGetHalfOfKey(byte[] deviceHalfOfKey) {
-                            secureAttributes.setDeviceHalfOfKey(deviceHalfOfKey);
-                            new SecureFileManager(mContext, secureAttributes).storeData(mEntities);
-                        }
+        mWearableSecureInterface.getDeviceHalfOfKey(secureAttributes.getDeviceId(),
+                new OnGetDeviceHalfOfKey() {
+                    @Override
+                    public void OnGetHalfOfKey(byte[] deviceHalfOfKey) {
+                        secureAttributes.setDeviceHalfOfKey(deviceHalfOfKey);
+                        new SecureFileManager(mContext, secureAttributes)
+                                .storeData(mEntities, storeData);
+                    }
 
-                        @Override
-                        public void getError(WearableDeviceError error, String errorMessage) {
-                            new ErrorDialog(mContext,
-                                    mContext.getString(R.string.can_not_get_device_half_of_key))
-                                    .show();
-                        }
-                    });
-        }
+                    @Override
+                    public void getError(WearableDeviceError error, String errorMessage) {
+                        storeData.getError(error, errorMessage);
+                    }
+                });
     }
 
     public void initSecureStorage(final OnInitSecureStorage initSecureStorage) {
@@ -161,5 +159,9 @@ public class SecureStorageManager {
             initSecureStorage.getError(WearableDeviceError.CAN_NOT_CREATE_SECURE_STORAGE,
                     mContext.getString(R.string.can_not_create_secure_storage));
         }
+    }
+
+    public void clearData() {
+        mEntities = null;
     }
 }
