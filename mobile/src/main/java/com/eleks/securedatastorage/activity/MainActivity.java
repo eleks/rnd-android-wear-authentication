@@ -2,16 +2,11 @@ package com.eleks.securedatastorage.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.eleks.securedatastorage.R;
-import com.eleks.securedatastorage.sdk.androidwatch.AndroidWatchSecureData;
-import com.eleks.securedatastorage.sdk.interfaces.OnGetPairedDeviceId;
-import com.eleks.securedatastorage.sdk.interfaces.WearableDeviceError;
 import com.eleks.securedatastorage.sdk.mockdevice.MockSecureData;
 import com.eleks.securedatastorage.sdk.storage.SecureStorageManager;
 import com.eleks.securedatastorage.utils.Constants;
@@ -60,23 +55,10 @@ public class MainActivity extends ActionBarActivity {
         testButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final AndroidWatchSecureData androidWatchSecureData =
-                        new AndroidWatchSecureData(MainActivity.this);
-                androidWatchSecureData.getPairedDeviceId(new OnGetPairedDeviceId() {
-                    @Override
-                    public void getError(WearableDeviceError error, String errorMessage) {
-                        Toast.makeText(MainActivity.this, errorMessage, Toast.LENGTH_LONG).show();
-                    }
-
-                    @Override
-                    public void receivedDeviceId(final String deviceId) {
-                        String message = "Doesn't exist paired device";
-                        if (!TextUtils.isEmpty(deviceId)) {
-                            message = "Device Id = " + deviceId;
-                        }
-                        Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
-                    }
-                });
+                String userName = secureStorageManager.getString(Constants.Extras.USER_NAME_ENTITY, "default username");
+                String password = secureStorageManager.getString(Constants.Extras.PASSWORD_ENTITY, "default password");
+                mUserNameEditText.setText(userName);
+                mPasswordEditText.setText(password);
             }
         });
     }
