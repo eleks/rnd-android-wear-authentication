@@ -22,23 +22,48 @@ import java.util.ArrayList;
  */
 public class SecureFileManager {
 
-    private final Context mContext;
-    private SecureAttributes mSecureAttributes;
+    private final File mSecuredFile;
+    private final SecureAttributes mSecureAttributes;
 
     public SecureFileManager(Context context, SecureAttributes secureAttributes) {
-        this.mContext = context;
         this.mSecureAttributes = secureAttributes;
+        mSecuredFile = new File(context.getFilesDir(), Constants.Security.SECURED_FILE_NAME);
     }
 
     public void storeData(final ArrayList<EntityHolder> entities) {
-        //TODO need to implement
+        if (entities != null) {
+            DataHolder dataHolder;
+            if (mSecuredFile.exists() && securedFileIsCorrect(mSecuredFile)) {
+                dataHolder = getDecryptedData(mSecuredFile);
+            } else {
+                dataHolder = new DataHolder();
+            }
+            for (EntityHolder entity : entities) {
+                dataHolder.setEntity(entity.getEntityName(), entity.getEntityValue());
+            }
+            String json = getJsonFromObject(dataHolder);
+            String encryptedData = encryptData(json);
+            DataFile dataFile = new DataFile(encryptedData);
+            json = getJsonFromObject(dataFile);
+            try {
+                IOHelper.writeFileSources(mSecuredFile, json);
+            } catch (IOException e) {
+                //do nothing
+            }
+        }
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    private String encryptData(String data) {
+        Encryption encryption = Encryption.getDefault(
+                mSecureAttributes.getSalt(), mSecureAttributes.getInitialVector());
+        return encryption.encryptOrNull(mSecureAttributes.getSecretKey(), data);
     }
 
     public String getData(String entityName) {
         String result = null;
-        File securedFile = new File(mContext.getFilesDir(), Constants.Security.SECURED_FILE_NAME);
-        if (securedFile.exists() && securedFileIsCorrect(securedFile)) {
-            DataHolder data = getDecryptedData(securedFile);
+        if (mSecuredFile.exists() && securedFileIsCorrect(mSecuredFile)) {
+            DataHolder data = getDecryptedData(mSecuredFile);
             result = data.getEntityValue(entityName);
         }
         return result;
@@ -49,7 +74,6 @@ public class SecureFileManager {
         try {
             String fileSources = IOHelper.getFileSources(securedFile);
             DataFile dataFile = (DataFile) getObjectFromJson(fileSources, DataFile.class);
-
             String decryptedData = decryptData(dataFile.getData());
             result = getDataHolder(decryptedData);
         } catch (IOException e) {
@@ -58,6 +82,7 @@ public class SecureFileManager {
         return result;
     }
 
+    @SuppressWarnings("ConstantConditions")
     private String decryptData(String data) {
         String result = null;
         if (mSecureAttributes != null && mSecureAttributes.getSecretKey() != null) {
@@ -88,6 +113,15 @@ public class SecureFileManager {
             }
         } catch (IOException e) {
             //do nothing
+        }
+        return result;
+    }
+
+    private String getJsonFromObject(Object object) {
+        String result = null;
+        if (object != null) {
+            Gson gson = new Gson();
+            result = gson.toJson(object);
         }
         return result;
     }
