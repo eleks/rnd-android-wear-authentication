@@ -29,14 +29,8 @@ public class SecureAttributes {
     }
 
     public SecretKey getSecretKey() {
-        byte[] keyArray = null;
-        if (mPhoneHalfOfKey != null && mWearDeviceHalfOfKey != null) {
-            keyArray = new byte[mPhoneHalfOfKey.length + mWearDeviceHalfOfKey.length];
-            System.arraycopy(mPhoneHalfOfKey, 0, keyArray, 0, mPhoneHalfOfKey.length);
-            System.arraycopy(mWearDeviceHalfOfKey, 0, keyArray, mPhoneHalfOfKey.length,
-                    mWearDeviceHalfOfKey.length);
-        }
         SecretKey secretKey = null;
+        byte[] keyArray = mergeByteArrays(mPhoneHalfOfKey, mWearDeviceHalfOfKey);
         if (keyArray != null) {
             try {
                 secretKey = (SecretKey) SecurityUtils.deserializeObject(keyArray);
@@ -45,6 +39,16 @@ public class SecureAttributes {
             }
         }
         return secretKey;
+    }
+
+    private byte[] mergeByteArrays(byte[] a1, byte[] a2) {
+        byte[] result = null;
+        if (a1 != null && a2 != null) {
+            result = new byte[a1.length + a2.length];
+            System.arraycopy(a1, 0, result, 0, a1.length);
+            System.arraycopy(a2, 0, result, a1.length, a2.length);
+        }
+        return result;
     }
 
     public String getSalt() {
