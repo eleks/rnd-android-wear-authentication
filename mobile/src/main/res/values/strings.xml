@@ -8,5 +8,6 @@
     <string name="security_storage_was_initialized_early_message">Security storage was initialized early.</string>
     <string name="security_storage_is_not_initialized_message">Security storage is not initialized.</string>
     <string name="security_storage_was_initialized_successfully_message">Security storage was initialized successfully.</string>
+    <string name="data_was_stored_successfully">Data was stored successfully.</string>
 
 </resources>
