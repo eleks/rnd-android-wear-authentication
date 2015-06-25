@@ -3,6 +3,9 @@ package com.eleks.securedatastorage.sdk.storage;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.eleks.securedatastorage.sdk.interfaces.OnGetDecryptedData;
+import com.eleks.securedatastorage.sdk.interfaces.OnStoreData;
+import com.eleks.securedatastorage.sdk.interfaces.WearableDeviceError;
 import com.eleks.securedatastorage.sdk.model.DataFile;
 import com.eleks.securedatastorage.sdk.model.DataHolder;
 import com.eleks.securedatastorage.sdk.model.EntityHolder;
@@ -10,6 +13,7 @@ import com.eleks.securedatastorage.sdk.model.SecureAttributes;
 import com.eleks.securedatastorage.sdk.security.Encryption;
 import com.eleks.securedatastorage.sdk.utils.Constants;
 import com.eleks.securedatastorage.sdk.utils.IOHelper;
+import com.eleks.securedatastorage.securestoragesdk.R;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
@@ -24,13 +28,15 @@ public class SecureFileManager {
 
     private final File mSecuredFile;
     private final SecureAttributes mSecureAttributes;
+    private Context mContext;
 
     public SecureFileManager(Context context, SecureAttributes secureAttributes) {
+        mContext = context;
         this.mSecureAttributes = secureAttributes;
         mSecuredFile = new File(context.getFilesDir(), Constants.Security.SECURED_FILE_NAME);
     }
 
-    public void storeData(final ArrayList<EntityHolder> entities) {
+    public void storeData(final ArrayList<EntityHolder> entities, OnStoreData storeData) {
         if (entities != null) {
             DataHolder dataHolder;
             if (mSecuredFile.exists() && isSecuredFileCorrect(mSecuredFile)) {
@@ -47,8 +53,10 @@ public class SecureFileManager {
             json = getJsonFromObject(dataFile);
             try {
                 IOHelper.writeFileSources(mSecuredFile, json);
+                storeData.dataStoredSuccessfully();
             } catch (IOException e) {
-                //do nothing
+                storeData.getError(WearableDeviceError.EXCEPTION_DURING_STORE_DATA,
+                        mContext.getString(R.string.exception_during_data_storage_message));
             }
         }
     }
@@ -60,13 +68,16 @@ public class SecureFileManager {
         return encryption.encryptOrNull(mSecureAttributes.getSecretKey(), data);
     }
 
-    public String getData(String entityName) {
-        String result = null;
+    public void getData(String entityName, OnGetDecryptedData getDecryptedData) {
         if (mSecuredFile.exists() && isSecuredFileCorrect(mSecuredFile)) {
             DataHolder data = getDecryptedData(mSecuredFile);
-            result = data.getEntityValue(entityName);
+            if (data != null) {
+                getDecryptedData.getDecryptedData(data.getEntityValue(entityName));
+            } else {
+                getDecryptedData.getError(WearableDeviceError.CAN_NOT_DECRYPT_DATA,
+                        mContext.getString(R.string.can_not_decrypt_data_message));
+            }
         }
-        return result;
     }
 
     private DataHolder getDecryptedData(File securedFile) {
@@ -89,8 +100,6 @@ public class SecureFileManager {
             Encryption encryption = Encryption.getDefault(
                     mSecureAttributes.getSalt(), mSecureAttributes.getInitialVector());
             result = encryption.decryptOrNull(mSecureAttributes.getSecretKey(), data);
-        } else {
-            //TODO need to process
         }
         return result;
     }
