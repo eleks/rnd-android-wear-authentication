@@ -11,6 +11,6 @@
     <string name="ok_button_text">OK</string>
     <string name="cancel_button_text">Cancel</string>
     <string name="error_dialog_positive_answer">OK</string>
-    <string name="can_not_create_security_storage">Critical exception: can not create security storage.</string>
+    <string name="can_not_create_secure_storage">Critical exception: can not create security storage.</string>
     <string name="secure_storage_is_not_initialized">Secure storage is not initialized.</string>
 </resources>
