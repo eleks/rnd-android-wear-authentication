@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by Serhiy.Krasovskyy on 17.06.2015.
@@ -30,12 +31,21 @@ public class DataHolder {
 
     public void setEntity(String entityName, String entityValue) {
         ArrayList<EntityHolder> dataList = getDataListFromDataArray(mData);
-        if (dataList.contains(entityName)) {
+        if (isListContains(dataList, entityName)) {
             dataList = updateDataList(dataList, entityName, entityValue);
         } else {
             dataList.add(new EntityHolder(entityName, entityValue));
         }
         mData = dataList.toArray(new EntityHolder[dataList.size()]);
+    }
+
+    private boolean isListContains(List<EntityHolder> list, String entityName) {
+        for (EntityHolder entity : list) {
+            if (entity.getEntityName().equals(entityName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private ArrayList<EntityHolder> updateDataList(
