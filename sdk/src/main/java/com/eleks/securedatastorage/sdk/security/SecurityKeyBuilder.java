@@ -69,7 +69,7 @@ public class SecurityKeyBuilder {
 
     public byte[] getDeviceHalfOfKey() {
         byte[] result = new byte[mDeviceHalfOfKeyLength];
-        System.arraycopy(mSecretKeyByteArray, mPhoneHalfOfKeyLength - 1,
+        System.arraycopy(mSecretKeyByteArray, mPhoneHalfOfKeyLength,
                 result, 0, mDeviceHalfOfKeyLength);
         return result;
     }
