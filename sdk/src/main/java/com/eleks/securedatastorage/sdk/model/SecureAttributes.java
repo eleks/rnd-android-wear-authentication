@@ -75,6 +75,10 @@ public class SecureAttributes {
         this.deviceId = deviceId;
     }
 
+    public byte[] getPhoneHalfOfKey() {
+        return mPhoneHalfOfKey;
+    }
+
     public void setPhoneHalfOfKey(byte[] mPhoneHalfOfKey) {
         this.mPhoneHalfOfKey = mPhoneHalfOfKey;
     }
