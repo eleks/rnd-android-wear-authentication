@@ -90,7 +90,8 @@ public class SecureStorageManager {
     }
 
     private void storeDataSecurely() {
-        final SecureAttributes secureAttributes = SecureAttributesManager.loadSecureAttributes(mContext);
+        final SecureAttributes secureAttributes = SecureAttributesManager
+                .loadSecureAttributes(mContext);
         if (secureAttributes != null && !TextUtils.isEmpty(secureAttributes.getDeviceId())) {
             mWearableSecureInterface.getDeviceHalfOfKey(secureAttributes.getDeviceId(),
                     new OnGetDeviceHalfOfKey() {
