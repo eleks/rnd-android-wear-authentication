@@ -13,4 +13,6 @@
     <string name="error_dialog_positive_answer">OK</string>
     <string name="can_not_create_secure_storage">Critical exception: can not create security storage.</string>
     <string name="secure_storage_is_not_initialized">Secure storage is not initialized.</string>
+    <string name="exception_during_data_storage_message">Can not store secure data.</string>
+    <string name="can_not_decrypt_data_message">Can not decrypt data.</string>
 </resources>
