@@ -33,7 +33,7 @@ public class SecureFileManager {
     public void storeData(final ArrayList<EntityHolder> entities) {
         if (entities != null) {
             DataHolder dataHolder;
-            if (mSecuredFile.exists() && securedFileIsCorrect(mSecuredFile)) {
+            if (mSecuredFile.exists() && isSecuredFileCorrect(mSecuredFile)) {
                 dataHolder = getDecryptedData(mSecuredFile);
             } else {
                 dataHolder = new DataHolder();
@@ -62,7 +62,7 @@ public class SecureFileManager {
 
     public String getData(String entityName) {
         String result = null;
-        if (mSecuredFile.exists() && securedFileIsCorrect(mSecuredFile)) {
+        if (mSecuredFile.exists() && isSecuredFileCorrect(mSecuredFile)) {
             DataHolder data = getDecryptedData(mSecuredFile);
             result = data.getEntityValue(entityName);
         }
@@ -103,12 +103,12 @@ public class SecureFileManager {
         return result;
     }
 
-    private boolean securedFileIsCorrect(File securedFile) {
+    private boolean isSecuredFileCorrect(File securedFile) {
         boolean result = false;
         try {
             String fileSources = IOHelper.getFileSources(securedFile);
             DataFile dataFile = (DataFile) getObjectFromJson(fileSources, DataFile.class);
-            if (dataFile.isDataValid()) {
+            if (dataFile != null && dataFile.isDataValid()) {
                 result = true;
             }
         } catch (IOException e) {
