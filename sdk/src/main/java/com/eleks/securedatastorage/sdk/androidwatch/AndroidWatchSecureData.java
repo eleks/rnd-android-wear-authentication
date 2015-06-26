@@ -72,7 +72,7 @@ public class AndroidWatchSecureData implements WearableSecureDataInterface {
                 if (devices != null) {
                     for (String internalDeviceId : devices) {
                         if (internalDeviceId.equals(deviceId)) {
-                            getPairedDeviceListener.getPairedDevice(true);
+                            getPairedDeviceListener.getPairedDevice();
                         }
                     }
                 } else {

@@ -6,9 +6,11 @@ import android.text.TextUtils;
 import com.eleks.securedatastorage.sdk.interfaces.OnGetDeviceHalfOfKey;
 import com.eleks.securedatastorage.sdk.interfaces.OnGetPairedDevice;
 import com.eleks.securedatastorage.sdk.interfaces.OnGetPairedDeviceId;
+import com.eleks.securedatastorage.sdk.interfaces.WearableDeviceError;
 import com.eleks.securedatastorage.sdk.interfaces.WearableSecureDataInterface;
 import com.eleks.securedatastorage.sdk.utils.Constants;
 import com.eleks.securedatastorage.sdk.utils.IOHelper;
+import com.eleks.securedatastorage.securestoragesdk.R;
 
 import java.io.File;
 
@@ -48,9 +50,10 @@ public class MockSecureData implements WearableSecureDataInterface {
     @Override
     public void isPairedDeviceConnected(String deviceId, OnGetPairedDevice getPairedDeviceListener) {
         if (!TextUtils.isEmpty(deviceId) && Constants.MockDevice.DEVICE_ID.equals(deviceId)) {
-            getPairedDeviceListener.getPairedDevice(true);
+            getPairedDeviceListener.getPairedDevice();
         } else {
-            getPairedDeviceListener.getPairedDevice(false);
+            getPairedDeviceListener.getError(WearableDeviceError.CAN_NOT_GET_DEVICE_LIST,
+                    mContext.getString(R.string.can_not_get_device_list));
         }
     }
 
