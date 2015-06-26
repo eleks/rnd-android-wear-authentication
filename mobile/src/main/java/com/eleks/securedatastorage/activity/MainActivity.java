@@ -1,5 +1,6 @@
 package com.eleks.securedatastorage.activity;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -11,11 +12,11 @@ import android.widget.Toast;
 
 import com.eleks.securedatastorage.R;
 import com.eleks.securedatastorage.dialogs.AskUserDialog;
+import com.eleks.securedatastorage.sdk.androidwatch.AndroidWatchSecureData;
 import com.eleks.securedatastorage.sdk.interfaces.OnGetDecryptedData;
 import com.eleks.securedatastorage.sdk.interfaces.OnInitSecureStorage;
 import com.eleks.securedatastorage.sdk.interfaces.OnStoreData;
 import com.eleks.securedatastorage.sdk.interfaces.WearableDeviceError;
-import com.eleks.securedatastorage.sdk.mockdevice.MockSecureData;
 import com.eleks.securedatastorage.sdk.storage.SecureStorageManager;
 import com.eleks.securedatastorage.utils.Constants;
 
@@ -24,17 +25,42 @@ public class MainActivity extends ActionBarActivity {
 
     private EditText mUserNameEditText;
     private EditText mPasswordEditText;
+    private SecureStorageManager mSecureStorageManager;
+    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mSecureStorageManager = new SecureStorageManager(
+                MainActivity.this, new AndroidWatchSecureData(MainActivity.this));
         initControls();
     }
 
+    void showProgressDialog(final String message) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mProgressDialog = ProgressDialog.show(MainActivity.this,
+                        MainActivity.this.getString(R.string.app_name),
+                        message);
+            }
+        });
+    }
+
+    void dismissProgressDialog() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (mProgressDialog != null) {
+                    mProgressDialog.dismiss();
+                    mProgressDialog = null;
+                }
+            }
+        });
+    }
+
     private void initControls() {
-        final SecureStorageManager secureStorageManager =
-                new SecureStorageManager(MainActivity.this, new MockSecureData(MainActivity.this));
         mUserNameEditText = (EditText) findViewById(R.id.user_name);
         mPasswordEditText = (EditText) findViewById(R.id.password);
 
@@ -42,7 +68,7 @@ public class MainActivity extends ActionBarActivity {
         initSecureStorageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!secureStorageManager.isSecureStorageInitialized()) {
+                if (!mSecureStorageManager.isSecureStorageInitialized()) {
                     new AskUserDialog(
                             MainActivity.this,
                             MainActivity.this
@@ -81,16 +107,35 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void restoreCredentials() {
-        final SecureStorageManager secureStorageManager =
-                new SecureStorageManager(MainActivity.this, new MockSecureData(MainActivity.this));
-        if (secureStorageManager.isSecureStorageInitialized()) {
-            secureStorageManager
-                    .getString(Constants.Extras.USER_NAME_ENTITY, "default username",
+        if (mSecureStorageManager.isSecureStorageInitialized()) {
+            showProgressDialog(getString(R.string.restore_credentials_message));
+            mSecureStorageManager
+                    .getString(Constants.Extras.USER_NAME_ENTITY,
                             new OnGetDecryptedData() {
                                 @Override
                                 public void getDecryptedData(String data) {
                                     if (!TextUtils.isEmpty(data)) {
                                         mUserNameEditText.setText(data);
+                                        mSecureStorageManager
+                                                .getString(Constants.Extras.PASSWORD_ENTITY,
+                                                        new OnGetDecryptedData() {
+                                                            @Override
+                                                            public void getDecryptedData(String data) {
+                                                                if (!TextUtils.isEmpty(data)) {
+                                                                    mPasswordEditText.setText(data);
+                                                                }
+                                                                dismissProgressDialog();
+                                                            }
+
+                                                            @Override
+                                                            public void getError(WearableDeviceError error,
+                                                                                 String errorMessage) {
+                                                                Toast.makeText(MainActivity.this, errorMessage,
+                                                                        Toast.LENGTH_LONG)
+                                                                        .show();
+                                                                dismissProgressDialog();
+                                                            }
+                                                        });
                                     }
                                 }
 
@@ -100,24 +145,7 @@ public class MainActivity extends ActionBarActivity {
                                     Toast.makeText(MainActivity.this, errorMessage,
                                             Toast.LENGTH_LONG)
                                             .show();
-                                }
-                            });
-            secureStorageManager
-                    .getString(Constants.Extras.PASSWORD_ENTITY, "default password",
-                            new OnGetDecryptedData() {
-                                @Override
-                                public void getDecryptedData(String data) {
-                                    if (!TextUtils.isEmpty(data)) {
-                                        mPasswordEditText.setText(data);
-                                    }
-                                }
-
-                                @Override
-                                public void getError(WearableDeviceError error,
-                                                     String errorMessage) {
-                                    Toast.makeText(MainActivity.this, errorMessage,
-                                            Toast.LENGTH_LONG)
-                                            .show();
+                                    dismissProgressDialog();
                                 }
                             });
         } else {
@@ -130,17 +158,17 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void storeCredentials() {
-        final SecureStorageManager secureStorageManager =
-                new SecureStorageManager(MainActivity.this, new MockSecureData(MainActivity.this));
-        if (secureStorageManager.isSecureStorageInitialized()) {
+        if (mSecureStorageManager.isSecureStorageInitialized()) {
+            showProgressDialog(getString(R.string.store_credentials_message));
             String userName = mUserNameEditText.getText().toString();
             String password = mPasswordEditText.getText().toString();
-            secureStorageManager.clearData();
-            secureStorageManager.setString(Constants.Extras.USER_NAME_ENTITY, userName);
-            secureStorageManager.setString(Constants.Extras.PASSWORD_ENTITY, password);
-            secureStorageManager.storeData(new OnStoreData() {
+            mSecureStorageManager.clearData();
+            mSecureStorageManager.setString(Constants.Extras.USER_NAME_ENTITY, userName);
+            mSecureStorageManager.setString(Constants.Extras.PASSWORD_ENTITY, password);
+            mSecureStorageManager.storeData(new OnStoreData() {
                 @Override
                 public void dataStoredSuccessfully() {
+                    dismissProgressDialog();
                     Toast.makeText(MainActivity.this,
                             MainActivity.this
                                     .getString(R.string.data_was_stored_successfully),
@@ -150,6 +178,7 @@ public class MainActivity extends ActionBarActivity {
 
                 @Override
                 public void getError(WearableDeviceError error, String errorMessage) {
+                    dismissProgressDialog();
                     Toast.makeText(MainActivity.this,
                             errorMessage, Toast.LENGTH_LONG).show();
                 }
@@ -164,9 +193,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void initSecureStorage() {
-        final SecureStorageManager secureStorageManager =
-                new SecureStorageManager(MainActivity.this, new MockSecureData(MainActivity.this));
-        secureStorageManager.initSecureStorage(new OnInitSecureStorage() {
+        mSecureStorageManager.initSecureStorage(new OnInitSecureStorage() {
             @Override
             public void initSecureStorageSuccessfully() {
                 Toast.makeText(MainActivity.this,
