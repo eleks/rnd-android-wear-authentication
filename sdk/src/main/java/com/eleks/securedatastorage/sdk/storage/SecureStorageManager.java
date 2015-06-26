@@ -2,10 +2,8 @@ package com.eleks.securedatastorage.sdk.storage;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.text.TextUtils;
 
-import com.eleks.securedatastorage.sdk.dialogs.AskUserDialog;
 import com.eleks.securedatastorage.sdk.dialogs.PasswordDialog;
 import com.eleks.securedatastorage.sdk.interfaces.OnGetDecryptedData;
 import com.eleks.securedatastorage.sdk.interfaces.OnGetDeviceHalfOfKey;
@@ -110,23 +108,16 @@ public class SecureStorageManager {
     }
 
     public void initSecureStorage(final OnInitSecureStorage initSecureStorage) {
-        new AskUserDialog(
-                mContext, mContext.getString(R.string.ask_user_about_secure_storage))
-                .show(new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        final PasswordDialog passwordDialog = PasswordDialog.getInstance();
-                        passwordDialog.setOnOkButtonClickListener(new PasswordDialog.OnOkButtonClickListener() {
-                            @Override
-                            public void onClick(String password) {
-                                passwordDialog.dismiss();
-                                processGetPairedDevice(password, initSecureStorage);
-                            }
-                        });
-                        passwordDialog.show(((Activity) mContext).getFragmentManager(),
-                                PasswordDialog.TAG);
-                    }
-                });
+        final PasswordDialog passwordDialog = PasswordDialog.getInstance();
+        passwordDialog.setOnOkButtonClickListener(new PasswordDialog.OnOkButtonClickListener() {
+            @Override
+            public void onClick(String password) {
+                passwordDialog.dismiss();
+                processGetPairedDevice(password, initSecureStorage);
+            }
+        });
+        passwordDialog.show(((Activity) mContext).getFragmentManager(),
+                PasswordDialog.TAG);
     }
 
     private void processGetPairedDevice(final String password,
