@@ -2,11 +2,11 @@ package com.eleks.securedatastorage.sdk.storage;
 
 import android.app.Activity;
 import android.content.Context;
-import android.text.TextUtils;
 
 import com.eleks.securedatastorage.sdk.dialogs.PasswordDialog;
 import com.eleks.securedatastorage.sdk.interfaces.OnGetDecryptedData;
 import com.eleks.securedatastorage.sdk.interfaces.OnGetDeviceHalfOfKey;
+import com.eleks.securedatastorage.sdk.interfaces.OnGetPairedDevice;
 import com.eleks.securedatastorage.sdk.interfaces.OnGetPairedDeviceId;
 import com.eleks.securedatastorage.sdk.interfaces.OnInitSecureStorage;
 import com.eleks.securedatastorage.sdk.interfaces.OnStoreData;
@@ -43,29 +43,38 @@ public class SecureStorageManager {
                 secureAttributes.getPhoneHalfOfKey() != null;
     }
 
-    public void getString(final String entityName, String defaultValue,
-                          final OnGetDecryptedData getDecryptedData) {
-        final SecureAttributes secureAttributes = SecureAttributesManager
-                .loadSecureAttributes(mContext);
-        //TODO need to process if secure attributes is null
-        if (secureAttributes != null && !TextUtils.isEmpty(secureAttributes.getDeviceId())) {
-            mWearableSecureInterface
-                    .getDeviceHalfOfKey(secureAttributes.getDeviceId(),
-                            new OnGetDeviceHalfOfKey() {
-                                @Override
-                                public void OnGetHalfOfKey(byte[] deviceHalfOfKey) {
-                                    secureAttributes.setDeviceHalfOfKey(deviceHalfOfKey);
-                                    new SecureFileManager(
-                                            mContext, secureAttributes).getData(entityName,
-                                            getDecryptedData);
-                                }
+    public void getString(final String entityName, final OnGetDecryptedData getDecryptedData) {
+        if (isSecureStorageInitialized()) {
+            final SecureAttributes secureAttributes = SecureAttributesManager
+                    .loadSecureAttributes(mContext);
+            mWearableSecureInterface.isPairedDeviceConnected(secureAttributes.getDeviceId(),
+                    new OnGetPairedDevice() {
+                        @Override
+                        public void getPairedDevice() {
+                            mWearableSecureInterface
+                                    .getDeviceHalfOfKey(secureAttributes.getDeviceId(),
+                                            new OnGetDeviceHalfOfKey() {
+                                                @Override
+                                                public void OnGetHalfOfKey(byte[] deviceHalfOfKey) {
+                                                    secureAttributes.setDeviceHalfOfKey(deviceHalfOfKey);
+                                                    new SecureFileManager(
+                                                            mContext, secureAttributes).getData(entityName,
+                                                            getDecryptedData);
+                                                }
 
-                                @Override
-                                public void getError(WearableDeviceError error,
-                                                     String errorMessage) {
-                                    getDecryptedData.getError(error, errorMessage);
-                                }
-                            });
+                                                @Override
+                                                public void getError(WearableDeviceError error,
+                                                                     String errorMessage) {
+                                                    getDecryptedData.getError(error, errorMessage);
+                                                }
+                                            });
+                        }
+
+                        @Override
+                        public void getError(WearableDeviceError error, String errorMessage) {
+                            getDecryptedData.getError(error, errorMessage);
+                        }
+                    });
         } else {
             getDecryptedData.getError(WearableDeviceError.SECURE_STORAGE_IS_NOT_INITIALIZED,
                     mContext.getString(R.string.secure_storage_is_not_initialized));
@@ -81,16 +90,28 @@ public class SecureStorageManager {
 
     public void storeData(final OnStoreData storeData) {
         if (isSecureStorageInitialized()) {
-            storeDataSecurely(storeData);
+            final SecureAttributes secureAttributes = SecureAttributesManager
+                    .loadSecureAttributes(mContext);
+            mWearableSecureInterface.isPairedDeviceConnected(secureAttributes.getDeviceId(),
+                    new OnGetPairedDevice() {
+                        @Override
+                        public void getPairedDevice() {
+                            storeDataSecurely(secureAttributes, storeData);
+                        }
+
+                        @Override
+                        public void getError(WearableDeviceError error, String errorMessage) {
+                            storeData.getError(error, errorMessage);
+                        }
+                    });
         } else {
             storeData.getError(WearableDeviceError.SECURE_STORAGE_IS_NOT_INITIALIZED,
                     mContext.getString(R.string.secure_storage_is_not_initialized));
         }
     }
 
-    private void storeDataSecurely(final OnStoreData storeData) {
-        final SecureAttributes secureAttributes = SecureAttributesManager
-                .loadSecureAttributes(mContext);
+    private void storeDataSecurely(final SecureAttributes secureAttributes,
+                                   final OnStoreData storeData) {
         mWearableSecureInterface.getDeviceHalfOfKey(secureAttributes.getDeviceId(),
                 new OnGetDeviceHalfOfKey() {
                     @Override
