@@ -1,4 +1,4 @@
-package com.eleks.securedatastorage.sdk.dialogs;
+package com.eleks.securedatastorage.dialogs;
 
 import android.app.AlertDialog;
 import android.content.Context;
