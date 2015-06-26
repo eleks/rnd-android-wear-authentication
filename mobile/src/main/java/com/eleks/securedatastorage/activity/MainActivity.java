@@ -17,6 +17,7 @@ import com.eleks.securedatastorage.sdk.interfaces.OnGetDecryptedData;
 import com.eleks.securedatastorage.sdk.interfaces.OnInitSecureStorage;
 import com.eleks.securedatastorage.sdk.interfaces.OnStoreData;
 import com.eleks.securedatastorage.sdk.interfaces.WearableDeviceError;
+import com.eleks.securedatastorage.sdk.mockdevice.MockSecureData;
 import com.eleks.securedatastorage.sdk.storage.SecureStorageManager;
 import com.eleks.securedatastorage.utils.Constants;
 
@@ -33,7 +34,7 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mSecureStorageManager = new SecureStorageManager(
-                MainActivity.this, new AndroidWatchSecureData(MainActivity.this));
+                MainActivity.this, new MockSecureData(MainActivity.this));
         initControls();
     }
 
