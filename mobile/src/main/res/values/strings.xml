@@ -11,5 +11,11 @@
     <string name="data_was_stored_successfully">Data was stored successfully.</string>
     <string name="store_credentials_message">Storing credentials to secure storage...</string>
     <string name="restore_credentials_message">Restoring credentials from secure storage...</string>
+    <string name="card_number_hint">Card number</string>
+    <string name="expiration_date_text">Expiration date:</string>
+    <string name="expiration_month_hint">Month</string>
+    <string name="expiration_year_hint">Year</string>
+    <string name="cvv_hint">CVV</string>
+    <string name="submit_button_text">Submit card information</string>
 
 </resources>
