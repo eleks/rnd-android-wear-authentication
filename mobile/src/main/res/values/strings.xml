@@ -21,4 +21,8 @@
     <string name="all_fields_should_be_filled_message">All fields should be filled.</string>
     <string name="payment_parameters_were_stored_successfully_message">Payment parameters were stored successfully.</string>
     <string name="store_payment_parameters_message">Storing payments paramameters…</string>
+    <string name="buy_button_title">Buy</string>
+    <string name="title_activity_approve_paiment">ApprovePaimentActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="approve_payment_button">Approve paiment</string>
 </resources>
