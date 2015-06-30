@@ -78,13 +78,13 @@ public class InitializeActivity extends BaseActivity {
 
     private void storePaymentParametersToSecureStorage() {
         showProgressDialog(getString(R.string.store_payment_parameters_message));
-        mSecureStorageManager.setString(Constants.PYMENT_PARAMETERS.CARD_NUMBER,
+        mSecureStorageManager.setString(Constants.PaymentParameters.CARD_NUMBER,
                 mPaymentParametersFragment.getCardNumber());
-        mSecureStorageManager.setString(Constants.PYMENT_PARAMETERS.EXPIRATION_MONTH,
+        mSecureStorageManager.setString(Constants.PaymentParameters.EXPIRATION_MONTH,
                 mPaymentParametersFragment.getExpirationMonth());
-        mSecureStorageManager.setString(Constants.PYMENT_PARAMETERS.EXPIRATION_YEAR,
+        mSecureStorageManager.setString(Constants.PaymentParameters.EXPIRATION_YEAR,
                 mPaymentParametersFragment.getExpirationYear());
-        mSecureStorageManager.setString(Constants.PYMENT_PARAMETERS.CARD_CVV,
+        mSecureStorageManager.setString(Constants.PaymentParameters.CARD_CVV,
                 mPaymentParametersFragment.getCardCvv());
         mSecureStorageManager.storeData(new OnStoreData() {
             @Override
