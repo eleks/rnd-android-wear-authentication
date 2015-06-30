@@ -20,4 +20,5 @@
     <string name="error_dialog_positive_answer">OK</string>
     <string name="all_fields_should_be_filled_message">All fields should be filled.</string>
     <string name="payment_parameters_were_stored_successfully_message">Payment parameters were stored successfully.</string>
+    <string name="store_payment_parameters_message">Storing payments paramameters…</string>
 </resources>

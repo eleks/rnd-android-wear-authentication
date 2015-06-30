@@ -2,7 +2,6 @@ package com.eleks.securedatastorage.activity;
 
 import android.app.FragmentManager;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -21,7 +20,7 @@ import com.eleks.securedatastorage.utils.Constants;
 /**
  * Created by Serhiy.Krasovskyy on 26.06.2015.
  */
-public class InitializeActivity extends ActionBarActivity {
+public class InitializeActivity extends BaseActivity {
 
     private PaymentParametersFragment mPaymentParametersFragment;
     private SecureStorageManager mSecureStorageManager;
@@ -30,6 +29,12 @@ public class InitializeActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_initialize);
+        mSecureStorageManager = new SecureStorageManager(InitializeActivity.this,
+                new MockSecureData(InitializeActivity.this));
+        if (mSecureStorageManager.isSecureStorageInitialized()) {
+            BuySomethingActivity.start(InitializeActivity.this);
+            finish();
+        }
         initControls();
     }
 
@@ -54,8 +59,6 @@ public class InitializeActivity extends ActionBarActivity {
     }
 
     private void storePaymentParameters() {
-        mSecureStorageManager = new SecureStorageManager(InitializeActivity.this,
-                new MockSecureData(InitializeActivity.this));
         if (!mSecureStorageManager.isSecureStorageInitialized()) {
             mSecureStorageManager.initSecureStorage(new OnInitSecureStorage() {
                 @Override
@@ -74,6 +77,7 @@ public class InitializeActivity extends ActionBarActivity {
     }
 
     private void storePaymentParametersToSecureStorage() {
+        showProgressDialog(getString(R.string.store_payment_parameters_message));
         mSecureStorageManager.setString(Constants.PYMENT_PARAMETERS.CARD_NUMBER,
                 mPaymentParametersFragment.getCardNumber());
         mSecureStorageManager.setString(Constants.PYMENT_PARAMETERS.EXPIRATION_MONTH,
