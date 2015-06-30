@@ -6,59 +6,16 @@
     android:layout_marginRight="16dp"
     android:layout_marginTop="16dp">
 
-    <EditText
-        android:id="@+id/card_number"
+    <FrameLayout
+        android:id="@+id/payment_parameters_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/card_number_hint"
-        android:inputType="number"
-        android:textSize="16sp" />
-
-    <TextView
-        android:id="@+id/expiration_date_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/card_number"
-        android:layout_marginLeft="3dp"
-        android:layout_marginTop="10dp"
-        android:text="@string/expiration_date_text"
-        android:textSize="16sp" />
-
-    <EditText
-        android:id="@+id/expiration_month"
-        android:layout_width="60dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/expiration_date_label"
-        android:layout_marginTop="5dp"
-        android:hint="@string/expiration_month_hint"
-        android:inputType="number"
-        android:textSize="16sp" />
-
-    <EditText
-        android:id="@+id/expiration_year"
-        android:layout_width="60dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/expiration_date_label"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="5dp"
-        android:layout_toRightOf="@id/expiration_month"
-        android:hint="@string/expiration_year_hint"
-        android:inputType="number"
-        android:textSize="16sp" />
-
-    <EditText
-        android:id="@+id/card_cvv"
-        android:layout_width="50dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/expiration_month"
-        android:layout_marginTop="10dp"
-        android:hint="@string/cvv_hint" />
+        android:layout_height="wrap_content" />
 
     <Button
         android:id="@+id/submit_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/card_cvv"
+        android:layout_below="@+id/payment_parameters_container"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="15dp"
         android:text="@string/submit_button_text" />
