@@ -11,7 +11,7 @@ public class Constants {
         public static final String USER_NAME_ENTITY = "user_name";
     }
 
-    public static class PYMENT_PARAMETERS {
+    public static class PaymentParameters {
         public static final String CARD_NUMBER = "card_number";
         public static final String EXPIRATION_MONTH = "expiration_month";
         public static final String EXPIRATION_YEAR = "expiration_year";
