@@ -166,6 +166,7 @@ public class SecureStorageManager {
                 SecureAttributesBuilder.build(securityKeyBuilder, deviceId);
         try {
             SecureAttributesManager.storeSecureAttributes(mContext, secureAttributes);
+            new SecureFileManager(mContext, secureAttributes).clearData();
             initSecureStorage.initSecureStorageSuccessfully();
         } catch (IOException e) {
             initSecureStorage.getError(WearableDeviceError.CAN_NOT_CREATE_SECURE_STORAGE,

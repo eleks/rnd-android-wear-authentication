@@ -145,4 +145,11 @@ public class SecureFileManager {
         }
         return result;
     }
+
+    public void clearData() {
+        if (mSecuredFile.exists()) {
+            //noinspection ResultOfMethodCallIgnored
+            mSecuredFile.delete();
+        }
+    }
 }
