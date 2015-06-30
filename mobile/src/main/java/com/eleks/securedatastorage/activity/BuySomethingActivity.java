@@ -3,6 +3,8 @@ package com.eleks.securedatastorage.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
@@ -75,6 +77,24 @@ public class BuySomethingActivity extends BaseActivity {
         } else {
             ApprovePaymentActivity.start(BuySomethingActivity.this, mPaymentParameters);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.buy_something_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.action_edit_payment_info:
+                InitializeActivity.start(BuySomethingActivity.this, false);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }

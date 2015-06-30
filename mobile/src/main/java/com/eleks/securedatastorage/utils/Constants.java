@@ -7,8 +7,7 @@ package com.eleks.securedatastorage.utils;
 public class Constants {
 
     public static class Extras {
-        public static final String PASSWORD_ENTITY = "password";
-        public static final String USER_NAME_ENTITY = "user_name";
+        public static final String AUTO_START = "auto_start";
     }
 
     public static class PaymentParameters {
