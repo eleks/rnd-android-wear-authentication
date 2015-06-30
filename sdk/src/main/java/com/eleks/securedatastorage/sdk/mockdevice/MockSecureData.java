@@ -53,7 +53,7 @@ public class MockSecureData implements WearableSecureDataInterface {
             getPairedDeviceListener.getPairedDevice();
         } else {
             getPairedDeviceListener.getError(WearableDeviceError.CAN_NOT_GET_DEVICE_LIST,
-                    mContext.getString(R.string.can_not_get_device_list));
+                    mContext.getString(R.string.can_not_get_paired_device));
         }
     }
 
