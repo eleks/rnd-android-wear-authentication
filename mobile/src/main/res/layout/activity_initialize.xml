@@ -20,4 +20,13 @@
         android:layout_marginTop="15dp"
         android:text="@string/submit_button_text" />
 
+    <Button
+        android:id="@+id/reinitialize_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/submit_button"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:text="@string/reinitialize_button_text" />
+
 </RelativeLayout>

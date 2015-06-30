@@ -1,6 +1,8 @@
 package com.eleks.securedatastorage.activity;
 
 import android.app.FragmentManager;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -24,6 +26,13 @@ public class InitializeActivity extends BaseActivity {
 
     private PaymentParametersFragment mPaymentParametersFragment;
     private SecureStorageManager mSecureStorageManager;
+    private boolean mAutoStart = true;
+
+    public static void start(Context context, boolean autoStart) {
+        Intent intent = new Intent(context, InitializeActivity.class);
+        intent.putExtra(Constants.Extras.AUTO_START, autoStart);
+        context.startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +40,8 @@ public class InitializeActivity extends BaseActivity {
         setContentView(R.layout.activity_initialize);
         mSecureStorageManager = new SecureStorageManager(InitializeActivity.this,
                 new MockSecureData(InitializeActivity.this));
-        if (mSecureStorageManager.isSecureStorageInitialized()) {
+        getExtras();
+        if (mSecureStorageManager.isSecureStorageInitialized() && mAutoStart) {
             BuySomethingActivity.start(InitializeActivity.this);
             finish();
         }
@@ -46,7 +56,36 @@ public class InitializeActivity extends BaseActivity {
                 processForm();
             }
         });
+        Button reinitializeButton = (Button) findViewById(R.id.reinitialize_button);
+        if (mSecureStorageManager.isSecureStorageInitialized()) {
+            reinitializeButton.setVisibility(View.VISIBLE);
+        } else {
+            reinitializeButton.setVisibility(View.GONE);
+        }
+        reinitializeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                reinitializeSecurityStorage();
+            }
+        });
         initFragment();
+    }
+
+    private void reinitializeSecurityStorage() {
+        mSecureStorageManager.initSecureStorage(new OnInitSecureStorage() {
+            @Override
+            public void initSecureStorageSuccessfully() {
+                Toast.makeText(InitializeActivity.this,
+                        InitializeActivity.this
+                                .getString(R.string.reinitialize_security_storage_successfully_message),
+                        Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void getError(WearableDeviceError error, String errorMessage) {
+                new ErrorDialog(InitializeActivity.this, errorMessage).show();
+            }
+        });
     }
 
     private void processForm() {
@@ -89,6 +128,7 @@ public class InitializeActivity extends BaseActivity {
         mSecureStorageManager.storeData(new OnStoreData() {
             @Override
             public void dataStoredSuccessfully() {
+                dismissProgressDialog();
                 Toast.makeText(InitializeActivity.this,
                         InitializeActivity.this
                                 .getString(R.string.payment_parameters_were_stored_successfully_message),
@@ -97,6 +137,7 @@ public class InitializeActivity extends BaseActivity {
 
             @Override
             public void getError(WearableDeviceError error, String errorMessage) {
+                dismissProgressDialog();
                 new ErrorDialog(InitializeActivity.this, errorMessage).show();
             }
         });
@@ -116,5 +157,11 @@ public class InitializeActivity extends BaseActivity {
         fragmentManager.beginTransaction()
                 .replace(R.id.payment_parameters_container, mPaymentParametersFragment,
                         PaymentParametersFragment.TAG).commit();
+    }
+
+    public void getExtras() {
+        if (getIntent().getExtras() != null) {
+            mAutoStart = getIntent().getExtras().getBoolean(Constants.Extras.AUTO_START, true);
+        }
     }
 }
