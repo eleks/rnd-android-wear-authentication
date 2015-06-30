@@ -133,6 +133,8 @@ public class InitializeActivity extends BaseActivity {
                         InitializeActivity.this
                                 .getString(R.string.payment_parameters_were_stored_successfully_message),
                         Toast.LENGTH_LONG).show();
+                BuySomethingActivity.start(InitializeActivity.this);
+                InitializeActivity.this.finish();
             }
 
             @Override
