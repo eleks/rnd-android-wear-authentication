@@ -26,19 +26,26 @@ public class PaymentParametersFragment extends Fragment {
     private String mExpirationMonthValue;
     private String mExpirationYearValue;
     private String mCardCvvValue;
-
-    public static PaymentParametersFragment getInstance() {
-        return new PaymentParametersFragment();
-    }
+    private boolean mIsReadOnlyFields = false;
 
     public static PaymentParametersFragment getInstance(String cardNumber, String expirationMonth,
-                                                        String expirationYear, String cardCvv) {
+                                                        String expirationYear, String cardCvv,
+                                                        boolean isReadOnlyFields) {
         PaymentParametersFragment fragment = new PaymentParametersFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(Constants.PaymentParameters.CARD_NUMBER, cardNumber);
-        bundle.putString(Constants.PaymentParameters.EXPIRATION_MONTH, expirationMonth);
-        bundle.putString(Constants.PaymentParameters.EXPIRATION_YEAR, expirationYear);
-        bundle.putString(Constants.PaymentParameters.CARD_CVV, cardCvv);
+        if (!TextUtils.isEmpty(cardNumber)) {
+            bundle.putString(Constants.PaymentParameters.CARD_NUMBER, cardNumber);
+        }
+        if (!TextUtils.isEmpty(expirationMonth)) {
+            bundle.putString(Constants.PaymentParameters.EXPIRATION_MONTH, expirationMonth);
+        }
+        if (!TextUtils.isEmpty(expirationYear)) {
+            bundle.putString(Constants.PaymentParameters.EXPIRATION_YEAR, expirationYear);
+        }
+        if (!TextUtils.isEmpty(cardCvv)) {
+            bundle.putString(Constants.PaymentParameters.CARD_CVV, cardCvv);
+        }
+        bundle.putBoolean(Constants.Extras.IS_READONLY_FIELDS, isReadOnlyFields);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -76,7 +83,7 @@ public class PaymentParametersFragment extends Fragment {
     }
 
     private void fillFragmentControls() {
-        setEditTextValue(mCardNumber, mCardNumberValue);
+       setEditTextValue(mCardNumber, mCardNumberValue);
         setEditTextValue(mExpirationMonth, mExpirationMonthValue);
         setEditTextValue(mExpirationYear, mExpirationYearValue);
         setEditTextValue(mCardCvv, mCardCvvValue);
@@ -85,8 +92,10 @@ public class PaymentParametersFragment extends Fragment {
     private void setEditTextValue(EditText editText, String value) {
         if (!TextUtils.isEmpty(value)) {
             editText.setText(value);
-            editText.setEnabled(false);
-            editText.setClickable(false);
+            if (mIsReadOnlyFields) {
+                editText.setEnabled(false);
+                editText.setClickable(false);
+            }
         }
     }
 
@@ -99,6 +108,7 @@ public class PaymentParametersFragment extends Fragment {
             mExpirationYearValue = getArguments()
                     .getString(Constants.PaymentParameters.EXPIRATION_YEAR, null);
             mCardCvvValue = getArguments().getString(Constants.PaymentParameters.CARD_CVV, null);
+            mIsReadOnlyFields = getArguments().getBoolean(Constants.Extras.IS_READONLY_FIELDS, false);
         }
     }
 

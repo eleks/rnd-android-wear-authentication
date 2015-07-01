@@ -52,7 +52,7 @@ public class ApprovePaymentActivity extends ActionBarActivity {
         FragmentManager fragmentManager = getFragmentManager();
         PaymentParametersFragment mPaymentParametersFragment =
                 PaymentParametersFragment.getInstance(mCardNumber, mExpirationMonth,
-                mExpirationYear, mCardCvv);
+                        mExpirationYear, mCardCvv, true);
         fragmentManager.beginTransaction()
                 .replace(R.id.payment_parameters_container, mPaymentParametersFragment,
                         PaymentParametersFragment.TAG).commit();
