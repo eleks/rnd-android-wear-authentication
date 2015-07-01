@@ -4,7 +4,9 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.os.Handler;
+import android.view.View;
+import android.widget.Button;
 
 import com.eleks.securedatastorage.R;
 import com.eleks.securedatastorage.fragment.PaymentParametersFragment;
@@ -14,7 +16,7 @@ import com.eleks.securedatastorage.utils.Constants;
 import java.util.List;
 
 
-public class ApprovePaymentActivity extends ActionBarActivity {
+public class ApprovePaymentActivity extends BaseActivity {
 
     private String mCardNumber;
     private String mExpirationMonth;
@@ -34,7 +36,31 @@ public class ApprovePaymentActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_approve_payment);
         getExtras();
+        initControls();
+    }
+
+    private void initControls() {
         initFragment();
+        Button approveButton = (Button) findViewById(R.id.approve_payment_button);
+        approveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                processPayment();
+            }
+        });
+    }
+
+    private void processPayment() {
+        showProgressDialog(getString(R.string.make_payment_message));
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                dismissProgressDialog();
+                CongratulationsActivity.start(ApprovePaymentActivity.this);
+                finish();
+            }
+        }, Constants.PAYMENT_DELAY);
     }
 
     private void getExtras() {

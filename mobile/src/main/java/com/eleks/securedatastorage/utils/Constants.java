@@ -6,6 +6,8 @@ package com.eleks.securedatastorage.utils;
 @SuppressWarnings("SpellCheckingInspection")
 public class Constants {
 
+    public static final long PAYMENT_DELAY = 3000;
+
     public static class Extras {
         public static final String AUTO_START = "auto_start";
         public static final String IS_READONLY_FIELDS = "is_read_only_fields";

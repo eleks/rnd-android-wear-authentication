@@ -6,19 +6,14 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.eleks.securedatastorage.activity.ApprovePaymentActivity">
+    tools:context="com.eleks.securedatastorage.activity.CongratulationsActivity">
 
-    <FrameLayout
-        android:id="@+id/payment_parameters_container"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <Button
-        android:id="@+id/approve_payment_button"
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:text="@string/approve_payment_button" />
+        android:layout_centerVertical="true"
+        android:text="@string/congratulations_message"
+        android:textSize="36sp" />
 
 </RelativeLayout>

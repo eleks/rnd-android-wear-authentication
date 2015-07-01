@@ -28,6 +28,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.eleks.securedatastorage.activity.BuySomethingActivity" />
         </activity>
+        <activity
+            android:name=".activity.CongratulationsActivity"
+            android:label="@string/title_activity_congratulations_activity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.eleks.securedatastorage.activity.ApprovePaymentActivity" />
+        </activity>
     </application>
 
 </manifest>
