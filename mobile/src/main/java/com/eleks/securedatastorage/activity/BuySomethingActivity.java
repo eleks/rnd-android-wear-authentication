@@ -45,37 +45,47 @@ public class BuySomethingActivity extends BaseActivity {
         buyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                processPayment();
+                processUserAction(new OnFinishReadSecureData() {
+                    @Override
+                    public void finishedSuccessfully() {
+                        ApprovePaymentActivity.start(BuySomethingActivity.this, mPaymentParameters);
+                    }
+                });
             }
         });
     }
 
-    private void processPayment() {
+    private void processUserAction(OnFinishReadSecureData finishReadSecureData) {
+        showProgressDialog(getString(R.string.getting_payment_parameters_from_secure_storage));
         mPaymentParameters = new ArrayList<>();
         mPaymentParameters.add(new ParameterHolder(Constants.PaymentParameters.CARD_NUMBER));
         mPaymentParameters.add(new ParameterHolder(Constants.PaymentParameters.EXPIRATION_MONTH));
         mPaymentParameters.add(new ParameterHolder(Constants.PaymentParameters.EXPIRATION_YEAR));
         mPaymentParameters.add(new ParameterHolder(Constants.PaymentParameters.CARD_CVV));
-        getPaymentParametersFromSecureStorage(0);
+        getPaymentParametersFromSecureStorage(0, finishReadSecureData);
     }
 
-    private void getPaymentParametersFromSecureStorage(final int parameterIdx) {
+    private void getPaymentParametersFromSecureStorage(final int parameterIdx,
+                                                       final OnFinishReadSecureData finishReadSecureData) {
         if (parameterIdx < mPaymentParameters.size()) {
             mSecureStorageManager.getString(mPaymentParameters.get(parameterIdx).parameterName,
                     new OnGetDecryptedData() {
                         @Override
                         public void getDecryptedData(String data) {
                             mPaymentParameters.get(parameterIdx).parameterValue = data;
-                            getPaymentParametersFromSecureStorage(parameterIdx + 1);
+                            getPaymentParametersFromSecureStorage(parameterIdx + 1,
+                                    finishReadSecureData);
                         }
 
                         @Override
                         public void getError(WearableDeviceError error, String errorMessage) {
+                            dismissProgressDialog();
                             new ErrorDialog(BuySomethingActivity.this, errorMessage).show();
                         }
                     });
         } else {
-            ApprovePaymentActivity.start(BuySomethingActivity.this, mPaymentParameters);
+            dismissProgressDialog();
+            finishReadSecureData.finishedSuccessfully();
         }
     }
 
@@ -91,10 +101,22 @@ public class BuySomethingActivity extends BaseActivity {
         int id = item.getItemId();
         switch (id) {
             case R.id.action_edit_payment_info:
-                InitializeActivity.start(BuySomethingActivity.this, false);
+                processUserAction(new OnFinishReadSecureData() {
+                    @Override
+                    public void finishedSuccessfully() {
+                        startInitializationActivity();
+                    }
+                });
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
+    private void startInitializationActivity() {
+        InitializeActivity.start(BuySomethingActivity.this, false, mPaymentParameters);
+    }
+
+    public interface OnFinishReadSecureData {
+        void finishedSuccessfully();
+    }
 }

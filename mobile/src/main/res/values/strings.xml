@@ -22,10 +22,11 @@
     <string name="payment_parameters_were_stored_successfully_message">Payment parameters were stored successfully.</string>
     <string name="store_payment_parameters_message">Storing payments parameters…</string>
     <string name="buy_button_title">Buy</string>
-    <string name="title_activity_approve_paiment">ApprovePaimentActivity</string>
+    <string name="title_activity_approve_payment">Approve payment</string>
     <string name="action_settings">Settings</string>
-    <string name="approve_payment_button">Approve paiment</string>
+    <string name="approve_payment_button">Approve payment</string>
     <string name="reinitialize_button_text">Reinitialize security storage</string>
     <string name="reinitialize_security_storage_successfully_message">Security storage reinitialization was made successfully.</string>
     <string name="menu_edit_payment_info">Edit payment information</string>
+    <string name="getting_payment_parameters_from_secure_storage">Getting payment parameters from secure storage…</string>
 </resources>
