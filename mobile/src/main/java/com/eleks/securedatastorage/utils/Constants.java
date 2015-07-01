@@ -8,6 +8,8 @@ public class Constants {
 
     public static class Extras {
         public static final String AUTO_START = "auto_start";
+        public static final String IS_READONLY_FIELDS = "is_read_only_fields";
+        public static final String PARENT_ACTIVITY = "parent_activity";
     }
 
     public static class PaymentParameters {
