@@ -10,18 +10,5 @@ import com.eleks.securedatastorage.sdk.interfaces.WearableDeviceError;
  */
 public class AndroidWatchMethods_Test extends InstrumentationTestCase {
 
-    public void test_checkIfWearableConnected() {
-        AndroidWatchSecureData androidWatchSecureData = new AndroidWatchSecureData(getInstrumentation().getTargetContext());
-        androidWatchSecureData.isPairedDeviceConnected("49db30f6", new OnGetPairedDevice() {
-            @Override
-            public void getPairedDevice(boolean result) {
-                assertTrue(result);
-            }
 
-            @Override
-            public void getError(WearableDeviceError error, String errorMessage) {
-
-            }
-        });
-    }
 }
