@@ -77,6 +77,9 @@ public class SecureFileManager {
                 getDecryptedData.getError(WearableDeviceError.CAN_NOT_DECRYPT_DATA,
                         mContext.getString(R.string.can_not_decrypt_data_message));
             }
+        }else{
+            getDecryptedData.getError(WearableDeviceError.SECURED_DATA_IS_NOT_EXISTS,
+                    mContext.getString(R.string.secured_data_is_not_exists));
         }
     }
 

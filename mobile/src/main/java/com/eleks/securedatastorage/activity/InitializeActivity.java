@@ -114,7 +114,7 @@ public class InitializeActivity extends BaseActivity {
             @Override
             public void getError(WearableDeviceError error, String errorMessage) {
                 dismissProgressDialog();
-                if (!error.equals(WearableDeviceError.USER_CANCEL_OPEARTION)) {
+                if (!error.equals(WearableDeviceError.USER_CANCEL_OPERATION)) {
                     new ErrorDialog(InitializeActivity.this, errorMessage).show();
                 }
             }

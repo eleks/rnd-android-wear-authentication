@@ -140,7 +140,7 @@ public class SecureStorageManager {
         passwordDialog.setOnCancelButtonClickListener(new PasswordDialog.OnCancelButtonClickListener() {
             @Override
             public void onClick() {
-                initSecureStorage.getError(WearableDeviceError.USER_CANCEL_OPEARTION,
+                initSecureStorage.getError(WearableDeviceError.USER_CANCEL_OPERATION,
                         mContext.getString(R.string.user_cancel_operation_message));
             }
         });
