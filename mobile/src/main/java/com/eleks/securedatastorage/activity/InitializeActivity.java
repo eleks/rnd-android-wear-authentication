@@ -13,10 +13,10 @@ import com.eleks.securedatastorage.R;
 import com.eleks.securedatastorage.dialogs.ErrorDialog;
 import com.eleks.securedatastorage.fragment.PaymentParametersFragment;
 import com.eleks.securedatastorage.model.ParameterHolder;
+import com.eleks.securedatastorage.sdk.androidwatch.AndroidWatchSecureData;
 import com.eleks.securedatastorage.sdk.interfaces.OnInitSecureStorage;
 import com.eleks.securedatastorage.sdk.interfaces.OnStoreData;
 import com.eleks.securedatastorage.sdk.interfaces.WearableDeviceError;
-import com.eleks.securedatastorage.sdk.mockdevice.MockSecureData;
 import com.eleks.securedatastorage.sdk.storage.SecureStorageManager;
 import com.eleks.securedatastorage.utils.Constants;
 
@@ -66,7 +66,7 @@ public class InitializeActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_initialize);
         mSecureStorageManager = new SecureStorageManager(InitializeActivity.this,
-                new MockSecureData(InitializeActivity.this));
+                new AndroidWatchSecureData(InitializeActivity.this));
         getExtras();
         if (mSecureStorageManager.isSecureStorageInitialized() && mAutoStart) {
             BuySomethingActivity.start(InitializeActivity.this);
@@ -92,6 +92,8 @@ public class InitializeActivity extends BaseActivity {
         reinitializeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                showProgressDialog(InitializeActivity
+                        .this.getString(R.string.secure_storage_initialization_message));
                 reinitializeSecurityStorage();
             }
         });
@@ -102,6 +104,7 @@ public class InitializeActivity extends BaseActivity {
         mSecureStorageManager.initSecureStorage(new OnInitSecureStorage() {
             @Override
             public void initSecureStorageSuccessfully() {
+                dismissProgressDialog();
                 Toast.makeText(InitializeActivity.this,
                         InitializeActivity.this
                                 .getString(R.string.reinitialize_security_storage_successfully_message),
@@ -110,13 +113,18 @@ public class InitializeActivity extends BaseActivity {
 
             @Override
             public void getError(WearableDeviceError error, String errorMessage) {
-                new ErrorDialog(InitializeActivity.this, errorMessage).show();
+                dismissProgressDialog();
+                if (!error.equals(WearableDeviceError.USER_CANCEL_OPEARTION)) {
+                    new ErrorDialog(InitializeActivity.this, errorMessage).show();
+                }
             }
         });
     }
 
     private void processForm() {
         if (isFormCorrect()) {
+            showProgressDialog(InitializeActivity
+                    .this.getString(R.string.secure_storage_initialization_message));
             storePaymentParameters();
         } else {
             new ErrorDialog(InitializeActivity.this,
@@ -134,6 +142,7 @@ public class InitializeActivity extends BaseActivity {
 
                 @Override
                 public void getError(WearableDeviceError error, String errorMessage) {
+                    dismissProgressDialog();
                     new ErrorDialog(InitializeActivity.this, errorMessage).show();
                 }
             });

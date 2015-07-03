@@ -11,6 +11,7 @@ import android.widget.Button;
 import com.eleks.securedatastorage.R;
 import com.eleks.securedatastorage.dialogs.ErrorDialog;
 import com.eleks.securedatastorage.model.ParameterHolder;
+import com.eleks.securedatastorage.sdk.androidwatch.AndroidWatchSecureData;
 import com.eleks.securedatastorage.sdk.interfaces.OnGetDecryptedData;
 import com.eleks.securedatastorage.sdk.interfaces.WearableDeviceError;
 import com.eleks.securedatastorage.sdk.mockdevice.MockSecureData;
@@ -36,7 +37,7 @@ public class BuySomethingActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_buy_something);
         mSecureStorageManager = new SecureStorageManager(BuySomethingActivity.this,
-                new MockSecureData(BuySomethingActivity.this));
+                new AndroidWatchSecureData(BuySomethingActivity.this));
         initControls();
     }
 
@@ -80,7 +81,7 @@ public class BuySomethingActivity extends BaseActivity {
                         @Override
                         public void getError(WearableDeviceError error, String errorMessage) {
                             dismissProgressDialog();
-                            new ErrorDialog(BuySomethingActivity.this, errorMessage).show();
+                            finishReadSecureData.finishedSuccessfully();
                         }
                     });
         } else {

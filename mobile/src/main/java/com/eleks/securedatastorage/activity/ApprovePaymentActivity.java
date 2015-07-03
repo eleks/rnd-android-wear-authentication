@@ -5,10 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 
 import com.eleks.securedatastorage.R;
+import com.eleks.securedatastorage.dialogs.ErrorDialog;
 import com.eleks.securedatastorage.fragment.PaymentParametersFragment;
 import com.eleks.securedatastorage.model.ParameterHolder;
 import com.eleks.securedatastorage.utils.Constants;
@@ -22,6 +24,7 @@ public class ApprovePaymentActivity extends BaseActivity {
     private String mExpirationMonth;
     private String mExpirationYear;
     private String mCardCvv;
+    private PaymentParametersFragment mPaymentParametersFragment;
 
     public static void start(Context context, List<ParameterHolder> paymentParameters) {
         Intent intent = new Intent(context, ApprovePaymentActivity.class);
@@ -45,9 +48,23 @@ public class ApprovePaymentActivity extends BaseActivity {
         approveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                processPayment();
+                if (isPaymentInfoCorrect()) {
+                    processPayment();
+                } else {
+                    new ErrorDialog(ApprovePaymentActivity.this,
+                            ApprovePaymentActivity.this
+                                    .getString(R.string.all_fields_should_be_filled_message))
+                            .show();
+                }
             }
         });
+    }
+
+    private boolean isPaymentInfoCorrect() {
+        return !TextUtils.isEmpty(mPaymentParametersFragment.getCardNumber()) &&
+                !TextUtils.isEmpty(mPaymentParametersFragment.getExpirationMonth()) &&
+                !TextUtils.isEmpty(mPaymentParametersFragment.getExpirationYear()) &&
+                !TextUtils.isEmpty(mPaymentParametersFragment.getCardCvv());
     }
 
     private void processPayment() {
@@ -76,7 +93,7 @@ public class ApprovePaymentActivity extends BaseActivity {
 
     private void initFragment() {
         FragmentManager fragmentManager = getFragmentManager();
-        PaymentParametersFragment mPaymentParametersFragment =
+        mPaymentParametersFragment =
                 PaymentParametersFragment.getInstance(mCardNumber, mExpirationMonth,
                         mExpirationYear, mCardCvv, true);
         fragmentManager.beginTransaction()
