@@ -70,10 +70,18 @@ public class AndroidWatchSecureData implements WearableSecureDataInterface {
             @Override
             public void foundDevices(List<String> devices) {
                 if (devices != null) {
+                    boolean foundFlag = false;
                     for (String internalDeviceId : devices) {
                         if (internalDeviceId.equals(deviceId)) {
+                            foundFlag = true;
                             getPairedDeviceListener.getPairedDevice();
+                            break;
                         }
+                    }
+                    if (!foundFlag) {
+                        getPairedDeviceListener
+                                .getError(WearableDeviceError.CAN_NOT_GET_PAIRED_DEVICE,
+                                        mContext.getString(R.string.can_not_get_paired_device));
                     }
                 } else {
                     getPairedDeviceListener
