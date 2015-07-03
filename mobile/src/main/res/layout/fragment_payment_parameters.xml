@@ -52,6 +52,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/expiration_month"
         android:layout_marginTop="10dp"
-        android:hint="@string/cvv_hint" />
+        android:hint="@string/cvv_hint"
+        android:inputType="number" />
 
 </RelativeLayout>
