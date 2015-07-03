@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.eleks.securedatastorage.securestoragesdk.R;
 
@@ -23,7 +22,8 @@ public class PasswordDialog extends DialogFragment {
     public static final String TAG = PasswordDialog.class.getName();
     private ViewGroup mParent;
     private View mView;
-    private ArrayList<OnOkButtonClickListener> mListeners;
+    private ArrayList<OnOkButtonClickListener> mOkButtonListeners;
+    private ArrayList<OnCancelButtonClickListener> mCancelButtonListeners;
 
     public static PasswordDialog getInstance() {
         return new PasswordDialog();
@@ -55,28 +55,40 @@ public class PasswordDialog extends DialogFragment {
             @Override
             public void onClick(View v) {
                 if (isCorrectPassword(passwordEditText.getText().toString())) {
-                    if (mListeners != null) {
-                        for (OnOkButtonClickListener listener : mListeners) {
+                    if (mOkButtonListeners != null) {
+                        for (OnOkButtonClickListener listener : mOkButtonListeners) {
                             listener.onClick(passwordEditText.getText().toString());
                         }
                     }
                 }
             }
         });
-        TextView cancelButton = (TextView) mView.findViewById(R.id.cancel_button);
+        Button cancelButton = (Button) mView.findViewById(R.id.cancel_button);
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (mCancelButtonListeners != null) {
+                    for (OnCancelButtonClickListener listener : mCancelButtonListeners) {
+                        listener.onClick();
+                    }
+                }
                 dismiss();
             }
         });
     }
 
     public void setOnOkButtonClickListener(OnOkButtonClickListener listener) {
-        if (mListeners == null) {
-            mListeners = new ArrayList<>();
+        if (mOkButtonListeners == null) {
+            mOkButtonListeners = new ArrayList<>();
         }
-        mListeners.add(listener);
+        mOkButtonListeners.add(listener);
+    }
+
+    public void setOnCancelButtonClickListener(OnCancelButtonClickListener listener) {
+        if (mCancelButtonListeners == null) {
+            mCancelButtonListeners = new ArrayList<>();
+        }
+        mCancelButtonListeners.add(listener);
     }
 
     private boolean isCorrectPassword(String password) {
@@ -86,5 +98,9 @@ public class PasswordDialog extends DialogFragment {
 
     public interface OnOkButtonClickListener {
         void onClick(String password);
+    }
+
+    public interface OnCancelButtonClickListener {
+        void onClick();
     }
 }

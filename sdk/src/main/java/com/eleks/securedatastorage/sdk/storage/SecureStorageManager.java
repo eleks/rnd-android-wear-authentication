@@ -137,6 +137,13 @@ public class SecureStorageManager {
                 processGetPairedDevice(password, initSecureStorage);
             }
         });
+        passwordDialog.setOnCancelButtonClickListener(new PasswordDialog.OnCancelButtonClickListener() {
+            @Override
+            public void onClick() {
+                initSecureStorage.getError(WearableDeviceError.USER_CANCEL_OPEARTION,
+                        mContext.getString(R.string.user_cancel_operation_message));
+            }
+        });
         passwordDialog.show(((Activity) mContext).getFragmentManager(),
                 PasswordDialog.TAG);
     }
