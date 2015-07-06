@@ -42,6 +42,7 @@ public class MainActivity extends Activity {
                 okButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        stopWatchDogTimer();
                         pairDevice(true);
                         finish();
                     }
@@ -50,6 +51,7 @@ public class MainActivity extends Activity {
                 cancelButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        stopWatchDogTimer();
                         pairDevice(false);
                         finish();
                     }
@@ -70,8 +72,9 @@ public class MainActivity extends Activity {
     }
 
     public void getExtras() {
-        stopWatchDogTimer();
-        mPhoneId = getIntent().getExtras().getString(Constants.Extras.PHONE_ID, null);
+        if (getIntent().getExtras() != null) {
+            mPhoneId = getIntent().getExtras().getString(Constants.Extras.PHONE_ID, null);
+        }
     }
 
     private void stopWatchDogTimer() {
