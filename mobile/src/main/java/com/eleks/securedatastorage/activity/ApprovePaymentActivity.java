@@ -96,6 +96,8 @@ public class ApprovePaymentActivity extends BaseActivity {
         mPaymentParametersFragment =
                 PaymentParametersFragment.getInstance(mCardNumber, mExpirationMonth,
                         mExpirationYear, mCardCvv, true);
+        mPaymentParametersFragment.setInformationMessage(
+                getString(R.string.approve_payment_information_message));
         fragmentManager.beginTransaction()
                 .replace(R.id.payment_parameters_container, mPaymentParametersFragment,
                         PaymentParametersFragment.TAG).commit();

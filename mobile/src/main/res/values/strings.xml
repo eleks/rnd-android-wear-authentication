@@ -16,7 +16,7 @@
     <string name="expiration_month_hint">Month</string>
     <string name="expiration_year_hint">Year</string>
     <string name="cvv_hint">CVV</string>
-    <string name="submit_button_text">Submit card information</string>
+    <string name="submit_button_text">Submit</string>
     <string name="error_dialog_positive_answer">OK</string>
     <string name="all_fields_should_be_filled_message">All fields should be filled.</string>
     <string name="payment_parameters_were_stored_successfully_message">Payment parameters were stored successfully.</string>
@@ -25,13 +25,22 @@
     <string name="title_activity_approve_payment">Approve payment</string>
     <string name="action_settings">Settings</string>
     <string name="approve_payment_button">Approve payment</string>
-    <string name="reinitialize_button_text">Reinitialize security storage</string>
+    <string name="reinitialize_button_text">Re-pair smartwatch</string>
     <string name="reinitialize_security_storage_successfully_message">Security storage reinitialization was made successfully.</string>
     <string name="menu_edit_payment_info">Edit payment information</string>
     <string name="getting_payment_parameters_from_secure_storage">Getting payment parameters from secure storage…</string>
     <string name="title_activity_congratulations_activity">Congratulations</string>
-    <string name="congratulations_message">Congratulations, you bought this watch!</string>
+    <string name="congratulations_message">Payment was successful!</string>
     <string name="make_payment_message">Make payment. Please wait.</string>
     <string name="secure_storage_initialization_message">Please wait. Secure storage is initializing…</string>
+    <string name="enter_information_info_message">Enter your credit card information to be\nused for payment transactions</string>
+    <string name="update_information_info_message">Update credit card information to be\nused for payment transactions</string>
+    <string name="approve_payment_information_message">You are going to make a payment\nPlease confirm purchase with\nbelow credit card</string>
+    <string name="motorola_moto_360">Motorola Moto 360</string>
+    <string name="watch_price">$420</string>
+    <string name="watch_info">First head-turning smartwatch backed by\nGoogle\'s intelligent software.</string>
+    <string name="title_activity_splash">Secure Data Storage</string>
+    <string name="splash_message">Store your credit card information\nsafe and make payment process\nas easy as never before</string>
+
 
 </resources>

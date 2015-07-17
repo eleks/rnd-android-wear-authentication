@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.eleks.securedatastorage.R;
 import com.eleks.securedatastorage.utils.Constants;
@@ -27,6 +28,8 @@ public class PaymentParametersFragment extends Fragment {
     private String mExpirationYearValue;
     private String mCardCvvValue;
     private boolean mIsReadOnlyFields = false;
+    private TextView mInformationMessageTextView;
+    private String mInformationMessage;
 
     public static PaymentParametersFragment getInstance(String cardNumber, String expirationMonth,
                                                         String expirationYear, String cardCvv,
@@ -83,7 +86,7 @@ public class PaymentParametersFragment extends Fragment {
     }
 
     private void fillFragmentControls() {
-       setEditTextValue(mCardNumber, mCardNumberValue);
+        setEditTextValue(mCardNumber, mCardNumberValue);
         setEditTextValue(mExpirationMonth, mExpirationMonthValue);
         setEditTextValue(mExpirationYear, mExpirationYearValue);
         setEditTextValue(mCardCvv, mCardCvvValue);
@@ -117,5 +120,13 @@ public class PaymentParametersFragment extends Fragment {
         mExpirationMonth = (EditText) mFragmentView.findViewById(R.id.expiration_month);
         mExpirationYear = (EditText) mFragmentView.findViewById(R.id.expiration_year);
         mCardCvv = (EditText) mFragmentView.findViewById(R.id.card_cvv);
+        mInformationMessageTextView = (TextView) mFragmentView.findViewById(R.id.information_message);
+        if (!TextUtils.isEmpty(mInformationMessage)) {
+            mInformationMessageTextView.setText(mInformationMessage);
+        }
+    }
+
+    public void setInformationMessage(String message) {
+        mInformationMessage = message;
     }
 }

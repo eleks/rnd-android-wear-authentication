@@ -9,12 +9,10 @@ import android.view.View;
 import android.widget.Button;
 
 import com.eleks.securedatastorage.R;
-import com.eleks.securedatastorage.dialogs.ErrorDialog;
 import com.eleks.securedatastorage.model.ParameterHolder;
 import com.eleks.securedatastorage.sdk.androidwatch.AndroidWatchSecureData;
 import com.eleks.securedatastorage.sdk.interfaces.OnGetDecryptedData;
 import com.eleks.securedatastorage.sdk.interfaces.WearableDeviceError;
-import com.eleks.securedatastorage.sdk.mockdevice.MockSecureData;
 import com.eleks.securedatastorage.sdk.storage.SecureStorageManager;
 import com.eleks.securedatastorage.utils.Constants;
 

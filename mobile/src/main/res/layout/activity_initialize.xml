@@ -11,22 +11,30 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <Button
-        android:id="@+id/submit_button"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/payment_parameters_container"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="15dp"
-        android:text="@string/submit_button_text" />
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
 
-    <Button
-        android:id="@+id/reinitialize_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/submit_button"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="15dp"
-        android:text="@string/reinitialize_button_text" />
+        <Button
+            android:id="@+id/submit_button"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="18dp"
+            android:background="@color/app_blue"
+            android:text="@string/submit_button_text"
+            android:textColor="@color/app_white" />
 
+        <Button
+            android:id="@+id/reinitialize_button"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="18dp"
+            android:background="@color/app_blue"
+            android:text="@string/reinitialize_button_text"
+            android:textColor="@color/app_white" />
+    </LinearLayout>
 </RelativeLayout>

@@ -47,6 +47,11 @@ public class InitializeActivity extends BaseActivity {
         context.startActivity(intent);
     }
 
+    public static void start(Context context) {
+        Intent intent = new Intent(context, InitializeActivity.class);
+        context.startActivity(intent);
+    }
+
     @Override
     public Intent getParentActivityIntent() {
         Intent parentIntent = super.getParentActivityIntent();
@@ -193,6 +198,11 @@ public class InitializeActivity extends BaseActivity {
         mPaymentParametersFragment =
                 PaymentParametersFragment.getInstance(mCardNumberValue, mExpirationMonthValue,
                         mExpirationYearValue, mCardCvvValue, false);
+        if (mSecureStorageManager.isSecureStorageInitialized()) {
+            mPaymentParametersFragment.setInformationMessage(
+                    getString(R.string.update_information_info_message)
+            );
+        }
         fragmentManager.beginTransaction()
                 .replace(R.id.payment_parameters_container, mPaymentParametersFragment,
                         PaymentParametersFragment.TAG).commit();
