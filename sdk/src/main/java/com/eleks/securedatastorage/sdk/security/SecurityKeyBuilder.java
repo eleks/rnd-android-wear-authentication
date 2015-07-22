@@ -21,8 +21,10 @@ public class SecurityKeyBuilder {
     private byte[] mSecretKeyByteArray;
 
     public SecurityKeyBuilder(String password) {
-        mSalt = getRandomSalt();
-        mInitialVector = getRandomInitialVector();
+        //mSalt = getRandomSalt();
+        mSalt = "1";
+        //mInitialVector = getRandomInitialVector();
+        mInitialVector = new byte[Constants.Security.INITIAL_VECTOR_LENGTH];
         Encryption encryption = Encryption.getDefault(password, mSalt, mInitialVector);
         try {
             SecretKey secretKey = encryption.getSecretKey();

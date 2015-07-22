@@ -20,6 +20,8 @@ import com.google.gson.JsonSyntaxException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Serhiy.Krasovskyy on 18.06.2015.
@@ -68,11 +70,16 @@ public class SecureFileManager {
         return encryption.encryptOrNull(mSecureAttributes.getSecretKey(), data);
     }
 
-    public void getData(String entityName, OnGetDecryptedData getDecryptedData) {
+    public void getData(String[] entityNames, OnGetDecryptedData getDecryptedData) {
         if (mSecuredFile.exists() && isSecuredFileCorrect(mSecuredFile)) {
             DataHolder data = getDecryptedData(mSecuredFile);
             if (data != null) {
-                getDecryptedData.getDecryptedData(data.getEntityValue(entityName));
+                Map<String, String> result = new HashMap<>();
+                for (String entityName : entityNames) {
+                    String entityValue = data.getEntityValue(entityName);
+                    result.put(entityName, entityValue);
+                }
+                getDecryptedData.getDecryptedData(result);
             } else {
                 getDecryptedData.getError(WearableDeviceError.CAN_NOT_DECRYPT_DATA,
                         mContext.getString(R.string.can_not_decrypt_data_message));

@@ -3,6 +3,7 @@ package com.eleks.securedatastorage.sdk.storage;
 import android.app.Activity;
 import android.content.Context;
 
+import com.eleks.securedatastorage.sdk.dialogs.NoWatchPasswordDialog;
 import com.eleks.securedatastorage.sdk.dialogs.PasswordDialog;
 import com.eleks.securedatastorage.sdk.interfaces.OnGetDecryptedData;
 import com.eleks.securedatastorage.sdk.interfaces.OnGetDeviceHalfOfKey;
@@ -43,7 +44,7 @@ public class SecureStorageManager {
                 secureAttributes.getPhoneHalfOfKey() != null;
     }
 
-    public void getString(final String entityName, final OnGetDecryptedData getDecryptedData) {
+    public void getData(final String[] entityName, final OnGetDecryptedData getDecryptedData) {
         if (isSecureStorageInitialized()) {
             final SecureAttributes secureAttributes = SecureAttributesManager
                     .loadSecureAttributes(mContext);
@@ -69,10 +70,27 @@ public class SecureStorageManager {
                                                 }
                                             });
                         }
-
                         @Override
-                        public void getError(WearableDeviceError error, String errorMessage) {
-                            getDecryptedData.getError(error, errorMessage);
+                        public void getError(final WearableDeviceError error, final String errorMessage) {
+                            final NoWatchPasswordDialog passwordDialog = NoWatchPasswordDialog.getInstance();
+                            passwordDialog.setOnOkButtonClickListener(new PasswordDialog.OnOkButtonClickListener() {
+                                @Override
+                                public void onClick(String password) {
+                                    secureAttributes.setDeviceHalfOfKey(new SecurityKeyBuilder(password).getDeviceHalfOfKey());
+                                    new SecureFileManager(
+                                            mContext, secureAttributes).getData(entityName,
+                                            getDecryptedData);
+                                }
+                            });
+                            passwordDialog.setOnCancelButtonClickListener(
+                                    new PasswordDialog.OnCancelButtonClickListener() {
+                                        @Override
+                                        public void onClick() {
+                                            getDecryptedData.getError(error, errorMessage);
+                                        }
+                                    });
+                            passwordDialog.show(((Activity) mContext).getFragmentManager(),
+                                    PasswordDialog.TAG);
                         }
                     });
         } else {

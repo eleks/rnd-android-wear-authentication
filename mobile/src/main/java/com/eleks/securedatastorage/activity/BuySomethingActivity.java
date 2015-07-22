@@ -11,6 +11,7 @@ import android.widget.Button;
 import com.eleks.securedatastorage.R;
 import com.eleks.securedatastorage.model.ParameterHolder;
 import com.eleks.securedatastorage.sdk.androidwatch.AndroidWatchSecureData;
+import com.eleks.securedatastorage.sdk.dialogs.InvalidPasswordDialog;
 import com.eleks.securedatastorage.sdk.interfaces.OnGetDecryptedData;
 import com.eleks.securedatastorage.sdk.interfaces.WearableDeviceError;
 import com.eleks.securedatastorage.sdk.storage.SecureStorageManager;
@@ -18,12 +19,14 @@ import com.eleks.securedatastorage.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 public class BuySomethingActivity extends BaseActivity {
 
     private SecureStorageManager mSecureStorageManager;
     private List<ParameterHolder> mPaymentParameters;
+    private Button buyButton;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, BuySomethingActivity.class);
@@ -40,7 +43,7 @@ public class BuySomethingActivity extends BaseActivity {
     }
 
     private void initControls() {
-        Button buyButton = (Button) findViewById(R.id.buy_button);
+        buyButton = (Button) findViewById(R.id.buy_button);
         buyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -54,38 +57,52 @@ public class BuySomethingActivity extends BaseActivity {
         });
     }
 
-    private void processUserAction(OnFinishReadSecureData finishReadSecureData) {
+    private void processUserAction(final OnFinishReadSecureData finishReadSecureData) {
         showProgressDialog(getString(R.string.getting_payment_parameters_from_secure_storage));
         mPaymentParameters = new ArrayList<>();
         mPaymentParameters.add(new ParameterHolder(Constants.PaymentParameters.CARD_NUMBER));
         mPaymentParameters.add(new ParameterHolder(Constants.PaymentParameters.EXPIRATION_MONTH));
         mPaymentParameters.add(new ParameterHolder(Constants.PaymentParameters.EXPIRATION_YEAR));
         mPaymentParameters.add(new ParameterHolder(Constants.PaymentParameters.CARD_CVV));
-        getPaymentParametersFromSecureStorage(0, finishReadSecureData);
-    }
 
-    private void getPaymentParametersFromSecureStorage(final int parameterIdx,
-                                                       final OnFinishReadSecureData finishReadSecureData) {
-        if (parameterIdx < mPaymentParameters.size()) {
-            mSecureStorageManager.getString(mPaymentParameters.get(parameterIdx).parameterName,
-                    new OnGetDecryptedData() {
-                        @Override
-                        public void getDecryptedData(String data) {
-                            mPaymentParameters.get(parameterIdx).parameterValue = data;
-                            getPaymentParametersFromSecureStorage(parameterIdx + 1,
-                                    finishReadSecureData);
-                        }
+        mSecureStorageManager.getData(new String[]{Constants.PaymentParameters.CARD_NUMBER,
+                Constants.PaymentParameters.EXPIRATION_MONTH,
+                Constants.PaymentParameters.EXPIRATION_YEAR,
+                Constants.PaymentParameters.CARD_CVV}, new OnGetDecryptedData() {
+            @Override
+            public void getDecryptedData(Map<String, String> data) {
+                mPaymentParameters.clear();
+                ParameterHolder holder;
+                for (Map.Entry<String, String> entry : data.entrySet()) {
+                    holder = new ParameterHolder(entry.getKey());
+                    holder.parameterValue = entry.getValue();
+                    mPaymentParameters.add(holder);
+                }
+                dismissProgressDialog();
+                finishReadSecureData.finishedSuccessfully();
+            }
 
+            @Override
+            public void getError(WearableDeviceError error, String errorMessage) {
+                dismissProgressDialog();
+                if (error == WearableDeviceError.CAN_NOT_DECRYPT_DATA) {
+                    showInvalidPasswordDialog(new InvalidPasswordDialog.OnOkButtonClickListener() {
                         @Override
-                        public void getError(WearableDeviceError error, String errorMessage) {
-                            dismissProgressDialog();
-                            finishReadSecureData.finishedSuccessfully();
+                        public void onClick() {
+                            buyButton.callOnClick();
                         }
                     });
-        } else {
-            dismissProgressDialog();
-            finishReadSecureData.finishedSuccessfully();
-        }
+                } else {
+                    finishReadSecureData.finishedSuccessfully();
+                }
+            }
+        });
+    }
+
+    private void showInvalidPasswordDialog(InvalidPasswordDialog.OnOkButtonClickListener onOkButtonClickListener) {
+        InvalidPasswordDialog dialog = InvalidPasswordDialog.getInstance();
+        dialog.setOnOkButtonClickListener(onOkButtonClickListener);
+        dialog.show(getFragmentManager(), this.getClass().getName());
     }
 
     @Override

@@ -9,14 +9,18 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".activity.InitializeActivity"
+            android:screenOrientation="portrait"
             android:label="@string/app_name"
-            android:parentActivityName=".activity.BuySomethingActivity"></activity>
+            android:parentActivityName=".activity.BuySomethingActivity" />
         <activity
             android:name=".activity.BuySomethingActivity"
+            android:screenOrientation="portrait"
             android:label="@string/app_name" />
         <activity
             android:name=".activity.ApprovePaymentActivity"
             android:label="@string/title_activity_approve_payment"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
             android:parentActivityName=".activity.BuySomethingActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -24,6 +28,7 @@
         </activity>
         <activity
             android:name=".activity.CongratulationsActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_congratulations_activity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -31,6 +36,7 @@
         </activity>
         <activity
             android:name=".activity.SplashActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

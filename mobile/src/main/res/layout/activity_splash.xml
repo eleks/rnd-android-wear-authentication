@@ -8,19 +8,18 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="120dp"
-        android:src="@drawable/lock_icon" />
+        android:src="@drawable/lock_icon"
+        android:layout_above="@+id/textView"
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="43dp"
-        android:layout_marginRight="43dp"
-        android:layout_marginTop="260dp"
         android:gravity="center_horizontal"
         android:text="@string/splash_message"
         android:textColor="@color/app_white"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/textView" />
 </RelativeLayout>

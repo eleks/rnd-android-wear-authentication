@@ -56,6 +56,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:hint="@string/expiration_month_hint"
+            android:nextFocusDown="@+id/expiration_year"
             android:inputType="number"
             android:textSize="16sp" />
 
@@ -66,6 +67,7 @@
             android:layout_weight="1"
             android:hint="@string/expiration_year_hint"
             android:inputType="number"
+            android:nextFocusDown="@+id/card_cvv"
             android:textSize="16sp" />
     </LinearLayout>
 
