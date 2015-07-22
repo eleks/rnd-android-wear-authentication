@@ -40,7 +40,7 @@
     <string name="lot_price">$399.99</string>
     <string name="lot_info">HERO4 Session packs the power of GoPro into our smallest, lightest, most convenient camera yet.</string>
     <string name="title_activity_splash">Secure Data Storage</string>
-    <string name="splash_message">Set your password once, store it secure</string>
+    <string name="splash_message">Set your password once,\n store it secure</string>
     <string name="splash_message_">Store your credit card information\nsafe and make payment process\nas easy as never before</string>
 
 
