@@ -26,7 +26,17 @@ public class BuySomethingActivity extends BaseActivity {
 
     private SecureStorageManager mSecureStorageManager;
     private List<ParameterHolder> mPaymentParameters;
-    private Button buyButton;
+    private View.OnClickListener onBuyButtonClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            processUserAction(new OnFinishReadSecureData() {
+                @Override
+                public void finishedSuccessfully() {
+                    ApprovePaymentActivity.start(BuySomethingActivity.this, mPaymentParameters);
+                }
+            });
+        }
+    };
 
     public static void start(Context context) {
         Intent intent = new Intent(context, BuySomethingActivity.class);
@@ -43,18 +53,8 @@ public class BuySomethingActivity extends BaseActivity {
     }
 
     private void initControls() {
-        buyButton = (Button) findViewById(R.id.buy_button);
-        buyButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                processUserAction(new OnFinishReadSecureData() {
-                    @Override
-                    public void finishedSuccessfully() {
-                        ApprovePaymentActivity.start(BuySomethingActivity.this, mPaymentParameters);
-                    }
-                });
-            }
-        });
+        Button buyButton = (Button) findViewById(R.id.buy_button);
+        buyButton.setOnClickListener(onBuyButtonClickListener);
     }
 
     private void processUserAction(final OnFinishReadSecureData finishReadSecureData) {
@@ -64,19 +64,15 @@ public class BuySomethingActivity extends BaseActivity {
         mPaymentParameters.add(new ParameterHolder(Constants.PaymentParameters.EXPIRATION_MONTH));
         mPaymentParameters.add(new ParameterHolder(Constants.PaymentParameters.EXPIRATION_YEAR));
         mPaymentParameters.add(new ParameterHolder(Constants.PaymentParameters.CARD_CVV));
-
-        mSecureStorageManager.getData(new String[]{Constants.PaymentParameters.CARD_NUMBER,
+        mSecureStorageManager.getData(new String[]{
+                Constants.PaymentParameters.CARD_NUMBER,
                 Constants.PaymentParameters.EXPIRATION_MONTH,
                 Constants.PaymentParameters.EXPIRATION_YEAR,
                 Constants.PaymentParameters.CARD_CVV}, new OnGetDecryptedData() {
             @Override
             public void getDecryptedData(Map<String, String> data) {
-                mPaymentParameters.clear();
-                ParameterHolder holder;
-                for (Map.Entry<String, String> entry : data.entrySet()) {
-                    holder = new ParameterHolder(entry.getKey());
-                    holder.parameterValue = entry.getValue();
-                    mPaymentParameters.add(holder);
+                for (ParameterHolder holder : mPaymentParameters) {
+                    holder.parameterValue = data.get(holder.parameterName);
                 }
                 dismissProgressDialog();
                 finishReadSecureData.finishedSuccessfully();
@@ -86,12 +82,7 @@ public class BuySomethingActivity extends BaseActivity {
             public void getError(WearableDeviceError error, String errorMessage) {
                 dismissProgressDialog();
                 if (error == WearableDeviceError.CAN_NOT_DECRYPT_DATA) {
-                    showInvalidPasswordDialog(new InvalidPasswordDialog.OnOkButtonClickListener() {
-                        @Override
-                        public void onClick() {
-                            buyButton.callOnClick();
-                        }
-                    });
+                    showInvalidPasswordDialog();
                 } else {
                     finishReadSecureData.finishedSuccessfully();
                 }
@@ -99,9 +90,9 @@ public class BuySomethingActivity extends BaseActivity {
         });
     }
 
-    private void showInvalidPasswordDialog(InvalidPasswordDialog.OnOkButtonClickListener onOkButtonClickListener) {
+    private void showInvalidPasswordDialog() {
         InvalidPasswordDialog dialog = InvalidPasswordDialog.getInstance();
-        dialog.setOnOkButtonClickListener(onOkButtonClickListener);
+        dialog.setOnOkButtonClickListener(onBuyButtonClickListener);
         dialog.show(getFragmentManager(), this.getClass().getName());
     }
 

@@ -11,6 +11,12 @@ public class Constants {
         public static final int INITIAL_VECTOR_LENGTH = 16;
         public static final int MAX_BYTE_VALUE = 255;
         public static final int SALT_LENGTH = 50;
+        public static final String SALT =
+                "UFlopGJQgp" +
+                        "eeXjGwlGTi" +
+                        "6MY6tC6Pxj" +
+                        "J31veOrdL4" +
+                        "356mArKLq3";
         public static final String ATTRIBUTES_FILE_NAME = "Attributes.dat";
         public static final String DEFAULT_CHARSET_NAME = "UTF-8";
     }

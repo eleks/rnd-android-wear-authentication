@@ -22,9 +22,9 @@ public class SecurityKeyBuilder {
 
     public SecurityKeyBuilder(String password) {
         //mSalt = getRandomSalt();
-        mSalt = "1";
+        mSalt = Constants.Security.SALT;
         //mInitialVector = getRandomInitialVector();
-        mInitialVector = new byte[Constants.Security.INITIAL_VECTOR_LENGTH];
+        mInitialVector = mSalt.substring(0, Constants.Security.INITIAL_VECTOR_LENGTH).getBytes();
         Encryption encryption = Encryption.getDefault(password, mSalt, mInitialVector);
         try {
             SecretKey secretKey = encryption.getSecretKey();

@@ -36,9 +36,9 @@
     <string name="enter_information_info_message">Enter your credit card information to be\nused for payment transactions</string>
     <string name="update_information_info_message">Update credit card information to be\nused for payment transactions</string>
     <string name="approve_payment_information_message">You are going to make a payment\nPlease confirm purchase with\nbelow credit card</string>
-    <string name="lot_name">GoPro HERO4 Session</string>
-    <string name="lot_price">$399.99</string>
-    <string name="lot_info">HERO4 Session packs the power of GoPro into our smallest, lightest, most convenient camera yet.</string>
+    <string name="item_name">GoPro HERO4 Session</string>
+    <string name="item_price">$399.99</string>
+    <string name="item_info">HERO4 Session packs the power of GoPro into our smallest, lightest, most convenient camera yet.</string>
     <string name="title_activity_splash">Secure Data Storage</string>
     <string name="splash_message">Set your password once,\n store it secure</string>
     <string name="splash_message_">Store your credit card information\nsafe and make payment process\nas easy as never before</string>

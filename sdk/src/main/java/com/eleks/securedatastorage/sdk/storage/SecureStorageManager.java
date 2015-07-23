@@ -45,58 +45,53 @@ public class SecureStorageManager {
     }
 
     public void getData(final String[] entityName, final OnGetDecryptedData getDecryptedData) {
-        if (isSecureStorageInitialized()) {
-            final SecureAttributes secureAttributes = SecureAttributesManager
-                    .loadSecureAttributes(mContext);
-            mWearableSecureInterface.isPairedDeviceConnected(secureAttributes.getDeviceId(),
-                    new OnGetPairedDevice() {
-                        @Override
-                        public void getPairedDevice() {
-                            mWearableSecureInterface
-                                    .getDeviceHalfOfKey(secureAttributes.getDeviceId(),
-                                            new OnGetDeviceHalfOfKey() {
-                                                @Override
-                                                public void OnGetHalfOfKey(byte[] deviceHalfOfKey) {
-                                                    secureAttributes.setDeviceHalfOfKey(deviceHalfOfKey);
-                                                    new SecureFileManager(
-                                                            mContext, secureAttributes).getData(entityName,
-                                                            getDecryptedData);
-                                                }
-
-                                                @Override
-                                                public void getError(WearableDeviceError error,
-                                                                     String errorMessage) {
-                                                    getDecryptedData.getError(error, errorMessage);
-                                                }
-                                            });
-                        }
-                        @Override
-                        public void getError(final WearableDeviceError error, final String errorMessage) {
-                            final NoWatchPasswordDialog passwordDialog = NoWatchPasswordDialog.getInstance();
-                            passwordDialog.setOnOkButtonClickListener(new PasswordDialog.OnOkButtonClickListener() {
-                                @Override
-                                public void onClick(String password) {
-                                    secureAttributes.setDeviceHalfOfKey(new SecurityKeyBuilder(password).getDeviceHalfOfKey());
-                                    new SecureFileManager(
-                                            mContext, secureAttributes).getData(entityName,
-                                            getDecryptedData);
-                                }
-                            });
-                            passwordDialog.setOnCancelButtonClickListener(
-                                    new PasswordDialog.OnCancelButtonClickListener() {
-                                        @Override
-                                        public void onClick() {
-                                            getDecryptedData.getError(error, errorMessage);
-                                        }
-                                    });
-                            passwordDialog.show(((Activity) mContext).getFragmentManager(),
-                                    PasswordDialog.TAG);
-                        }
-                    });
-        } else {
+        if (!isSecureStorageInitialized()) {
             getDecryptedData.getError(WearableDeviceError.SECURE_STORAGE_IS_NOT_INITIALIZED,
                     mContext.getString(R.string.secure_storage_is_not_initialized));
+            return;
         }
+        final SecureAttributes secureAttributes = SecureAttributesManager.loadSecureAttributes(mContext);
+        OnGetPairedDevice onGetPairedDevice = new OnGetPairedDevice() {
+            @Override
+            public void getPairedDevice() {
+                mWearableSecureInterface.getDeviceHalfOfKey(secureAttributes.getDeviceId(),
+                        new OnGetDeviceHalfOfKey() {
+                            @Override
+                            public void OnGetHalfOfKey(byte[] deviceHalfOfKey) {
+                                secureAttributes.setDeviceHalfOfKey(deviceHalfOfKey);
+                                new SecureFileManager(mContext, secureAttributes).getData(entityName,
+                                        getDecryptedData);
+                            }
+
+                            @Override
+                            public void getError(WearableDeviceError error, String errorMessage) {
+                                getDecryptedData.getError(error, errorMessage);
+                            }
+                        });
+            }
+
+            @Override
+            public void getError(final WearableDeviceError error, final String errorMessage) {
+                //No watch, ask users to enter a password
+                final NoWatchPasswordDialog passwordDialog = NoWatchPasswordDialog.getInstance();
+                passwordDialog.setOnOkButtonClickListener(new PasswordDialog.OnOkButtonClickListener() {
+                    @Override
+                    public void onClick(String password) {
+                        byte[] watchHalfOfKey = new SecurityKeyBuilder(password).getDeviceHalfOfKey();
+                        secureAttributes.setDeviceHalfOfKey(watchHalfOfKey);
+                        new SecureFileManager(mContext, secureAttributes).getData(entityName, getDecryptedData);
+                    }
+                });
+                passwordDialog.setOnCancelButtonClickListener(new PasswordDialog.OnCancelButtonClickListener() {
+                    @Override
+                    public void onClick() {
+                        getDecryptedData.getError(error, errorMessage);
+                    }
+                });
+                passwordDialog.show(((Activity) mContext).getFragmentManager(), PasswordDialog.TAG);
+            }
+        };
+        mWearableSecureInterface.isPairedDeviceConnected(secureAttributes.getDeviceId(), onGetPairedDevice);
     }
 
     public void setString(String entityName, String value) {
