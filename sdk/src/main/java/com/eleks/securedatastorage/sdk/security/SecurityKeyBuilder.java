@@ -21,10 +21,12 @@ public class SecurityKeyBuilder {
     private byte[] mSecretKeyByteArray;
 
     public SecurityKeyBuilder(String password) {
-        //mSalt = getRandomSalt();
-        mSalt = Constants.Security.SALT;
-        //mInitialVector = getRandomInitialVector();
-        mInitialVector = mSalt.substring(0, Constants.Security.INITIAL_VECTOR_LENGTH).getBytes();
+        this(getRandomSalt(), getRandomInitialVector(), password);
+    }
+
+    public SecurityKeyBuilder(String salt, byte[] initialVector, String password) {
+        mSalt = salt;
+        mInitialVector = initialVector;
         Encryption encryption = Encryption.getDefault(password, mSalt, mInitialVector);
         try {
             SecretKey secretKey = encryption.getSecretKey();
@@ -44,7 +46,7 @@ public class SecurityKeyBuilder {
         return mInitialVector;
     }
 
-    private String getRandomSalt() {
+    private static String getRandomSalt() {
         StringBuilder result = new StringBuilder();
         Random random = new Random();
         for (int i = 0; i < Constants.Security.SALT_LENGTH; i++) {
@@ -54,7 +56,7 @@ public class SecurityKeyBuilder {
         return result.toString();
     }
 
-    private byte[] getRandomInitialVector() {
+    private static byte[] getRandomInitialVector() {
         byte[] result = new byte[Constants.Security.INITIAL_VECTOR_LENGTH];
         Random random = new Random();
         for (int i = 0; i < Constants.Security.INITIAL_VECTOR_LENGTH; i++) {

@@ -11,7 +11,6 @@ import android.widget.Button;
 import com.eleks.securedatastorage.R;
 import com.eleks.securedatastorage.model.ParameterHolder;
 import com.eleks.securedatastorage.sdk.androidwatch.AndroidWatchSecureData;
-import com.eleks.securedatastorage.sdk.dialogs.InvalidPasswordDialog;
 import com.eleks.securedatastorage.sdk.interfaces.OnGetDecryptedData;
 import com.eleks.securedatastorage.sdk.interfaces.WearableDeviceError;
 import com.eleks.securedatastorage.sdk.storage.SecureStorageManager;
@@ -71,29 +70,19 @@ public class BuySomethingActivity extends BaseActivity {
                 Constants.PaymentParameters.CARD_CVV}, new OnGetDecryptedData() {
             @Override
             public void getDecryptedData(Map<String, String> data) {
+                dismissProgressDialog();
                 for (ParameterHolder holder : mPaymentParameters) {
                     holder.parameterValue = data.get(holder.parameterName);
                 }
-                dismissProgressDialog();
                 finishReadSecureData.finishedSuccessfully();
             }
 
             @Override
             public void getError(WearableDeviceError error, String errorMessage) {
                 dismissProgressDialog();
-                if (error == WearableDeviceError.CAN_NOT_DECRYPT_DATA) {
-                    showInvalidPasswordDialog();
-                } else {
-                    finishReadSecureData.finishedSuccessfully();
-                }
+                finishReadSecureData.finishedSuccessfully();
             }
         });
-    }
-
-    private void showInvalidPasswordDialog() {
-        InvalidPasswordDialog dialog = InvalidPasswordDialog.getInstance();
-        dialog.setOnOkButtonClickListener(onBuyButtonClickListener);
-        dialog.show(getFragmentManager(), this.getClass().getName());
     }
 
     @Override
